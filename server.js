@@ -6,14 +6,13 @@ const path = require('path')
 const app = express()
 
 const mongoUrlLocal = 'mongodb://localhost:27017/test3'
-const mongoUrlLive = 'mongodb://127.0.0.1:27017/test3'
 
 // Allow cross-origin
 app.use(cors())
 
 const mongoose = require('mongoose')
 
-mongoose.connect(mongoUrlLive)
+mongoose.connect(mongoUrlLocal)
 
 mongoose.connection.once('open', () => {
     console.log('conneted to database')
