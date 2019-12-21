@@ -1,0 +1,91 @@
+@import './mixin.scss';
+@import './color.scss';
+
+.container-login {
+    @include flex (flex, column);
+    @include heightWidth (100%, 100%);
+
+    >div:nth-child(1) {
+        flex-basis: 8%;
+        @include flex (flex, row);
+
+        >div:nth-child(1) {
+            flex-basis: 1;
+            @include color ("gray100", none);
+            @include flex (flex, column);
+            @include heightWidth (100%, 100%);
+            @include alignItems (center, center);
+        }
+
+        >div:nth-child(2) {
+            flex-grow: 1;
+            @include color ("deepOrange600", none);
+            @include flex (flex, column);
+            @include heightWidth (100%, 100%);
+            @include alignItems (center, center);
+        }
+    }
+
+    >div:nth-child(2) {
+        flex-basis: 92%;
+        @include flex (flex, column);
+        @include alignItems (center, center);
+
+        // >div:nth-child(1) {
+        //     flex-basis: 0%;
+        //     @include flex (flex, column);
+        //     @include alignItems (center, center);
+        //     @include heightWidth (100%, 100%);
+
+        //     >div {
+        //         @include flex (flex, row);
+
+        //         span {
+        //             @include flex (flex, column);
+        //             justify-content: center;
+        //         }
+        //     }
+        // }
+
+        >div:nth-child(1) {
+            @include heightWidth (0, 100%);
+        }
+
+        >div:nth-child(2) {
+            flex-basis: 100%;
+            @include flex (flex, column);
+            @include alignItems (center, center);
+            @include heightWidth (100%, 100%);
+
+            >div {
+                @include heightWidth (100%, 100%);
+            }
+
+            button {
+                @include heightWidth (40px, auto);
+            }
+        }
+    }
+}
+
+
+
+.container-register {
+    @include flex (flex, column);
+    @include heightWidth (70vh, 100%);
+    @include alignItems (center, center);
+    margin-top: 10vh;
+
+    >div {
+        @include flex (flex, column);
+        @include alignItems (center, center);
+        @include heightWidth (90%, 50vw);
+        box-shadow: 0 0.125rem 0.625rem 0 rgba(0, 0, 0, 0.2);
+        transition: height 1s ease 0s;
+
+
+        button {
+            @include heightWidth (40px, auto);
+        }
+    }
+}

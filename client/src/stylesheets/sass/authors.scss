@@ -1,0 +1,190 @@
+$leftMargin: 15%; //due to side bar
+$headerHeight: 8vh;
+$contentMinHeight: 80vh;
+$listMinHeight: 70vh;
+
+.container-authors-main {
+    @include flexCenter (flex, column, center, center, auto, auto);
+    @include color ("white", none);
+    position: relative;
+    top: $headerHeight;
+    margin-left: $leftMargin;
+
+    >div {
+
+        @include flexCenter (flex, column, center, space-between, auto, 100%);
+        @include border (none, none, bottom, none, 'gray200', 1px, solid, none, none);
+
+        >div:nth-child(1) {
+
+            @include flexCenter (flex, column, center, flex-end, 0%, 100%);
+        }
+
+        >div:nth-child(2) {
+
+            @include flexCenter (flex, column, center, flex-start, 100%, 100%);
+
+            >div:nth-child(1) {
+                @include flexCenter (flex, row, center, flex-start, 20%, 100%);
+                @include color ("gray100", none);
+                @include spacePadding(none, none, none, none, left, 10%);
+                //for search adjust only
+                min-height: 10vh;
+
+                >div:nth-child(1) {
+                    @include spaceMargin(none, none, right, none, none, 5%);
+
+                }
+
+                >div {
+                    //@include flexCenter (flex, row, center, space-between, auto, auto);
+                    display: flex;
+
+                    >svg {
+                        @include position(8px, 30px, none, none, relative);
+                        @include color ("lkdn-1", none);
+                        @include border (none, none, none, left, 'gray100', 1px, solid, none, none);
+                    }
+                }
+
+
+                input,
+                input[type="text"] {
+                    height: 34px;
+                    @include color ("lkdn-1", none);
+                    border-radius: 3%;
+                }
+
+                input:focus {
+                    outline: none;
+                }
+            }
+
+            >div:nth-child(2) {
+
+                @include flexCenter (flex, column, center, center, 80%, 100%);
+                @include spacePadding(none, top, none, bottom, none, 2%);
+                min-height: $contentMinHeight;
+
+            }
+        }
+    }
+}
+
+.container-author-detail {
+    @include flexCenter (flex, column, center, flex-end, 100%, 100%);
+
+    >div:nth-child(1) {
+        @include flexCenter (flex, row, center, center, 50vh, 100%);
+
+        >div:nth-child(1) {
+
+            flex-basis: 50%;
+            @include flexCenter (flex, row, center, center, 100%, 100%);
+        }
+
+        >div:nth-child(2) {
+
+            flex-basis: 50%;
+            @include flexCenter (flex, column, center, center, 100%, 100%);
+
+            >span,
+            a {
+                @include flexCenter (flex, row, center, flex-start, auto, 100%);
+                @include getSpan('gray800', 14px, 500);
+                @include spaceMargin(none, none, none, none, none, 3%);
+                @include spacePadding(all, none, none, none, none, 2%);
+
+                >span {
+                    @include spaceMargin(none, none, right, none, none, 5%);
+                    @include getSpan('gray500', 14px, 700);
+                }
+            }
+        }
+
+    }
+
+    >div:nth-child(2) {
+        @include flexCenter (flex, column, center, center, auto, 100%);
+
+        >div:nth-child(1) {
+            //description
+            @include flexCenter (flex, column, center, flex-start, 20%, 80%);
+            @include border (none, none, none, none, 'gray200', 1px, solid, all, none);
+            @include spaceMargin(none, top, none, bottom, none, 2%);
+            @include spacePadding(none, none, right, none, left, 4%);
+
+            >span:nth-child(1) {
+                @include getSpan('gray800', 16px, 700);
+                @include spaceMargin(none, top, none, bottom, none, 2%);
+
+            }
+
+            >span:nth-child(2) {
+                @include spaceMargin(none, top, none, bottom, none, 2%);
+            }
+        }
+
+        >div:nth-child(2) {
+
+            @include flexCenter (flex, column, center, flex-start, 80%, 80%);
+            @include border (none, none, none, none, 'gray200', 1px, solid, all, none);
+            @include spaceMargin(none, top, none, bottom, none, 2%);
+            @include spacePadding(none, none, right, none, left, 4%);
+
+            >div:nth-child(1) {
+                //review header
+                @include flexCenter (flex, column, center, flex-start, 50%, 100%);
+                @include spaceMargin(none, none, none, bottom, none, 10%);
+
+
+                >span:nth-child(1) {
+                    @include getSpan('gray800', 16px, 700);
+                    @include spaceMargin(none, top, none, bottom, none, 2%);
+
+                }
+
+                //review list
+                >div {
+
+                    @include flexCenter (flex, column, center, flex-start, 100%, 100%);
+
+
+                    >div {
+                        @include flexCenter (flex, column, flex-start, flex-start, 100%, 100%);
+                        @include spacePadding(none, top, none, bottom, none, 2%);
+                        @include border (none, none, bottom, none, 'gray200', 1px, solid, none, none);
+                    }
+                }
+            }
+
+
+            >div:nth-child(2) {
+                //add rating
+                @include flexCenter (flex, column, center, center, 50%, 100%);
+                @include spaceMargin(none, none, none, bottom, none, 4%);
+                @include border (top, none, none, none, 'gray200', 1px, solid, none, none);
+                @include spacePadding(all, none, none, none, none, 2%);
+
+                >span:nth-child(1) {
+                    @include getSpan('gray800', 16px, 700);
+                    @include spaceMargin(none, top, none, bottom, none, 2%);
+
+                }
+
+                >div {
+                    @include flexCenter (flex, column, center, center, 80%, 50%);
+                }
+
+            }
+        }
+    }
+}
+
+.container-list {
+
+    >div:nth-child(1) {
+
+        min-height: $listMinHeight;
+    }
+}

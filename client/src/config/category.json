@@ -1,0 +1,12 @@
+[
+    {
+        "category": [
+            { "id": "1", "name": "Historical" },
+            { "id": "2", "name": "Romance" },
+            { "id": "3", "name": "Fiction" },
+            { "id": "4", "name": "Education" },
+            { "id": "5", "name": "Technology" },
+            { "id": "6", "name": "Scinece" }
+        ]
+    }
+]
