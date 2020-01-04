@@ -13,8 +13,6 @@ import { SubscriptionServer } from 'subscriptions-transport-ws'
 
 import typeDefs from './schema/schema'
 import { resolvers } from './schema/resolvers'
-import '@babel/polyfill'
-
 
 const schema = makeExecutableSchema({
     typeDefs,
