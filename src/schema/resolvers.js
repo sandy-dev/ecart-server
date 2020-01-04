@@ -265,6 +265,11 @@ export const resolvers = {
             const user = await UserModel.create(args)
             return user
         },
+
+        async addAuthor(root, args) {
+            const author = await AuthorModel.create(args)
+            return author
+        },
     },
 
     Subscription: {

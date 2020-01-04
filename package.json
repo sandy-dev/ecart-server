@@ -5,7 +5,7 @@
   "main": "server.js",
   "scripts": {
     "start": "node dist/app.js",
-    "start_dev": "nodemon --exec babel-node dist/app.js",
+    "start_dev": "nodemon --exec babel-node src/app.js",
     "build_1": "babel app.js --out-file app-compiled.js",
     "build": "babel ./src --out-dir dist",
     "server": "node app.js",

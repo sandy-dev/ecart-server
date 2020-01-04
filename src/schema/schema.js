@@ -128,6 +128,8 @@ export default `
     addRating(rating: Int!,review: String!,bookId: String!,userId: String!,date: String!): Rating
     
     addUser(uid: String!,name: String!,email: String!,image: String!): User
+    
+    addAuthor(name: String!,age: Int!): Author
 
   }
 
