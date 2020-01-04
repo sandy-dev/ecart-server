@@ -1,20 +1,22 @@
 import gql from 'graphql-tag'
 
 const FETCH_BOOKS = gql`
-  query booksQuery 
+  query booksQuery ( $category: Int!,$author: String!,$sort: String!,$search:String! ,$limit: Int!,$offset: Int!)
     {
-        books{
+        books(category:$category,author:$author,sort:$sort,search:$search,limit:$limit,offset:$offset){
+          count
+          Books{
             id
             name
             pages
             price
             image
             publishYear
-          category
-            author{
-              id
-              name
-            }
+            category
+              author{
+                id
+                name
+              }
             ratings{
               id
               review
@@ -26,6 +28,8 @@ const FETCH_BOOKS = gql`
               average
             }
           }
+        }
+            
     }`
 
 

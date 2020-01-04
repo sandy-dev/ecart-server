@@ -1,14 +1,14 @@
-$leftMargin: 15%; //due to side bar
+$leftMargin: 15vw; //due to side bar
 $headerHeight: 8vh;
 $contentMinHeight: 80vh;
 $listMinHeight: 70vh;
 
 .container-authors-main {
-    @include flexCenter (flex, column, center, center, auto, auto);
+    @include flexCenter (flex, column, center, center, auto, 85vw);
     @include color ("white", none);
     position: relative;
     top: $headerHeight;
-    margin-left: $leftMargin;
+    left: $leftMargin;
 
     >div {
 
@@ -27,6 +27,7 @@ $listMinHeight: 70vh;
             >div:nth-child(1) {
                 @include flexCenter (flex, row, center, flex-start, 20%, 100%);
                 @include color ("gray100", none);
+                // @include border (none, none, bottom, none, 'gray200', 1px, solid, none, none);
                 @include spacePadding(none, none, none, none, left, 10%);
                 //for search adjust only
                 min-height: 10vh;
@@ -50,13 +51,22 @@ $listMinHeight: 70vh;
 
                 input,
                 input[type="text"] {
-                    height: 34px;
+                    width: 24vw;
+                    height: 5vh;
                     @include color ("lkdn-1", none);
                     border-radius: 3%;
+                    @include border (top, none, bottom, left, 'gray400', 1px, solid, none, none);
+                    border-right: none !important;
                 }
 
                 input:focus {
                     outline: none;
+                }
+
+                a {
+                    @include color ("orange200", none);
+                    @include flexCenter (flex, column, center, center, 5vh, 5vw);
+                    cursor: pointer;
                 }
             }
 
@@ -64,7 +74,7 @@ $listMinHeight: 70vh;
 
                 @include flexCenter (flex, column, center, center, 80%, 100%);
                 @include spacePadding(none, top, none, bottom, none, 2%);
-                min-height: $contentMinHeight;
+                //min-height: $contentMinHeight;
 
             }
         }

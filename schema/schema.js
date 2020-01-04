@@ -12,6 +12,9 @@ export default `
     publishYear: String
     category: String
     authorID: String
+    averageRating: Float
+    ratingCount: Float
+
     author: Author
     ratings:[Rating]
     AverageRating: [RatingsOrderedType]
@@ -54,12 +57,24 @@ export default `
     _id: ID!
     userId: String!
     bookId: String!
+    date: String!
+    book: Book
+  }
+
+  type CartReturn {
+    name: String!
+    date: String!
+  }
+
+  type BooksResult {
+    count: Int
+    Books: [Book]
   }
 
   type Query {
     
     book( id: String!): Book
-    books: [Book]
+    books( category: Int!,author: String!, sort: String! , search: String! , limit: Int!, offset :Int! ): BooksResult
 
     author( id: String!): Author
     authors: [Author]
@@ -73,7 +88,7 @@ export default `
     users: [User]
 
     cart(userId: String!): Cart
-    carts: [Cart]
+    carts(userId: String!): [Cart]
 
   }
 
@@ -106,7 +121,8 @@ export default `
           category: String!
     ): Book
 
-    addCart(userId: String!,bookId: String!): Cart
+    addCart(userId: String!,bookId: String!,date: String!): Cart
+    removeCart(id: String!): Result
     
     
     addRating(rating: Int!,review: String!,bookId: String!,userId: String!,date: String!): Rating

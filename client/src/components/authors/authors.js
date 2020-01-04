@@ -28,15 +28,13 @@ export class authors extends Component {
                 <div>
 
                     <div>
-                        <span><h2>Author List</h2></span>
                     </div>
 
                     <div>
 
-                        <div>
+                        <div style={{ justifyContent: 'center', padding: 0 }}>
 
-                            <input value={this.state.inputText} maxLength='20' onChange={(event) => { this.validateAndSearch(event, 'name') }} />
-                            <Search />
+                            <span><h2>Author List</h2></span>
 
                         </div>
 
@@ -46,8 +44,6 @@ export class authors extends Component {
                                 if (loading) return <h4>Loading...</h4>
                                 if (error) console.log(error)
 
-
-                                console.log(data)
 
                                 return (
 

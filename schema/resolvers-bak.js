@@ -18,55 +18,74 @@ export const resolvers = {
 
         books: async (root, args) => {
 
-            const _sort = args.sort
-            let _count = []
-            let _booksSorted = []
+            let _sort = args.sort
+            if (args.category == 0) {
 
-            const seeacrText = new RegExp(args.search.toString(), 'i')
-            const authorText = new RegExp(args.author.toString(), 'i')
+                const _count = await BookModel.countDocuments()
 
-            if (args.category > 0) {
-                _count = await BookModel.aggregate([{ $match: { category: args.category.toString(), name: seeacrText, authorID: authorText } }, { $count: "totalCount" }])
-            } else {
-                _count = await BookModel.aggregate([{ $match: { name: seeacrText, authorID: authorText } }, { $count: "totalCount" }])
-            }
+                const _books = await BookModel.find()
+                    .sort({ _sort: -1 })
+                    .limit(args.limit)
+                    .skip(args.offset)
 
-            if (args.sort == 'rating') {
-
-                if (args.category > 0) {
-                    _booksSorted = await BookModel.find({ category: args.category, name: seeacrText, authorID: authorText }).sort({ 'averageRating': -1 }).limit(args.limit).skip(args.offset)
-                } else {
-                    _booksSorted = await BookModel.find({ name: seeacrText, authorID: authorText }).sort({ 'averageRating': -1 }).limit(args.limit).skip(args.offset)
+                return {
+                    count: _count,
+                    Books: _books
                 }
 
+
             } else {
-                if (args.category > 0) {
-                    await BookModel.find({ category: args.category, name: seeacrText, authorID: authorText })
-                        //.limit(args.limit).skip(args.offset)
-                        .then((result) => {
-                            result.sort((x, y) => {
-                                return new Date(y.publishYear).getTime() - new Date(x.publishYear).getTime()
-                            })
-                            _booksSorted = result.slice(args.offset, args.limit + args.offset)
 
+                const _books = await BookModel.find({
+                    category: args.category
+                })
+                const _count = _books.length
+
+                let _booksSorted = []
+
+                await BookModel.find({
+                    category: args.category
+                })
+                    .sort({ _sort: -1 })
+                    .limit(args.limit)
+                    .skip(args.offset)
+                    .then((result) => {
+
+                        let sortedResult = result.sort(async (x, y) => {
+
+                            if (args.sort == 'publishYear') {
+
+                                return new Date(y.publishYear) - new Date(x.publishYear)
+
+                            } else {
+
+                                let ratingX = await RatingModel.aggregate([{ $match: { bookId: x._id.toString() } }, { $group: { _id: "$bookId", average: { $avg: "$rating" } } }])
+                                let ratingY = await RatingModel.aggregate([{ $match: { bookId: y._id.toString() } }, { $group: { _id: "$bookId", average: { $avg: "$rating" } } }])
+
+                                console.log(ratingX.length)
+
+                                if (ratingX.length == 0)
+                                    return 1
+                                else if (ratingY.length == 0)
+                                    return -1
+                                else {
+                                    return parseFloat(ratingY[0].average) - parseFloat(ratingX[0].average)
+                                }
+                            }
                         })
 
-                } else {
-                    await BookModel.find({ name: seeacrText, authorID: authorText })
-                        .then((result) => {
-                            _booksSorted = result.sort((x, y) => {
-                                return new Date(y.publishYear).getTime() - new Date(x.publishYear).getTime()
-                            }).slice(args.offset, args.limit + args.offset)
-                        })
+                        console.log(sortedResult)
+
+                        _booksSorted = result
+                    })
+
+                return {
+                    count: _count,
+                    Books: _booksSorted
                 }
             }
-
-            return {
-                count: _count.length > 0 ? _count[0]['totalCount'] : 0,
-                Books: _booksSorted
-            }
-
         },
+
 
         author: async (root, args) => {
             let author = await AuthorModel.findById(args.id)
@@ -118,24 +137,9 @@ export const resolvers = {
             let cart = await CartModel.findOne({ userId: args.userId })
             return cart
         },
-        carts: async (root, args) => {
-            let carts = await CartModel.find({ userId: args.userId }).populate('book')
-            return carts
-
-            // let carts = await CartModel.aggregate([
-            //     {
-            //         $lookup:
-            //         {
-            //             from: 'books',
-            //             localField: 'bookId',
-            //             foreignField: '_id',
-            //             as: 'books'
-            //         }
-            //     }
-            // ]) .then((result) => {
-            //     console.log(result)
-            // })
-        }
+        async carts() {
+            return await CartModel.find()
+        },
     },
 
     Book: {
@@ -168,14 +172,6 @@ export const resolvers = {
         }
     },
 
-    Cart: {
-        book: async (args) => {
-            return await BookModel.findById(args.bookId)
-        }
-    },
-
-
-
     Mutation: {
 
         async addBook(root, args) {
@@ -195,6 +191,7 @@ export const resolvers = {
             book.publishYear = args.publishYear
             book.category = args.category
             await book.save()
+            console.log(book)
             return book
         },
 
@@ -225,40 +222,10 @@ export const resolvers = {
             //return cart
         },
 
-        removeCart: async (root, args) => {
-
-            // await CartModel.findById(args.id)
-            //     .then((doc) => {
-            //         doc.remove()
-            //             .then((doc) => {
-            //                 if (doc != null)
-            //                     return { count: 'success' }
-            //                 else
-            //                     return { count: 'success' }
-            //             })
-            //     })
-
-            const deletedItem = await CartModel.findByIdAndDelete(args.id)
-            return { count: deletedItem.id }
-        },
-
 
         async addRating(root, args) {
             const rating = await RatingModel.create(args)
-
-            //update book collection with rating data
-            let book = await BookModel.findById(args.bookId)
-            let ratings = await RatingModel.find({ bookId: args.bookId })
-
-            let total = 0, count = 0
-            if (ratings && ratings.length > 0) {
-                ratings.map(a => { total = total + a.rating, count++ })
-            }
-            book.averageRating = ((total + args.rating) / count).toFixed(1)
-            book.ratingCount = count
-            await book.save()
             return rating
-
         },
 
         async addUser(root, args) {

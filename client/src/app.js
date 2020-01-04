@@ -9,6 +9,7 @@ import Sidebar from '_src/components/layout/sidebar'
 import NotFound from '_src/components/common/notFound'
 import Landing from '_src/components/landing'
 import Home from '_src/components/home'
+import Account from '_src/components/users/account'
 
 import Authors from '_src/components/authors/authors'
 import AddAuthor from '_src/components/authors/addAuthor'
@@ -17,7 +18,7 @@ import Books from '_src/components/books/books'
 import AddBook from '_src/components/books/add'
 import BookDetail from '_src/components/books/details'
 
-import { AplloClient,ApolloProvider } from '_src/config/apollo'
+import { AplloClient, ApolloProvider } from '_src/config/apollo'
 
 
 class App extends Component {
@@ -39,30 +40,25 @@ class App extends Component {
 
                 <BrowserRouter>
 
-                    <UserSync signedIn={this.state.isSignedIn} />
+                    <UserSync signedIn={this.state.isSignedIn} user={this.state._user} />
                     <Header isSignedIn={this.state.isSignedIn} user={this.state._user} />
-
                     <Sidebar isSignedIn={this.state.isSignedIn} />
                     {/* <Route path="/" component={this.state.isSignedIn ? Sidebar : null} /> */}
 
                     <Switch>
 
-                        {/* <Route exact path="/" component={this.state.isSignedIn ? Home : Landing} /> */}
-                        <Route exact path="/" component={Landing} />
+                        {/* <Route exact path="/" component={this.state.isSignedIn ? Home : Landing} />
+                        <Route exact path="/home" component={Home} /> */}
 
-
-                        <Route exact path="/home" component={Home} />
-
-                        <Route exact path="/books" exact component={Books} />
+                        <Route exact path="/" component={Books} />
+                        <Route exact path="/books" component={Books} />
                         <Route exact path="/books/add" exact component={AddBook} />
                         <Route path="/books/details" exact component={BookDetail} />
 
                         <Route exact path="/authors" exact component={Authors} />
                         <Route exact path="/authors/add" exact component={AddAuthor} />
 
-                        {/* <Route exact path="/account" exact component={Books} />
-                        <Route exact path="/books/add" exact component={AddBook} />
-                        <Route path="/books/detail" exact component={Books} /> */}
+                        <Route exact path="/account" exact component={Account} />
 
                         <Route path="*" component={NotFound} />
 
@@ -94,6 +90,7 @@ class App extends Component {
             } else {
                 this.setState({
                     isSignedIn: false,
+                    _user: []
                 })
             }
         })

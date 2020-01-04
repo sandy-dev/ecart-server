@@ -1,0 +1,33 @@
+@import './mixin.scss';
+@import './color.scss';
+$headerHeight: 8vh;
+$leftMargin: 15vw; //due to side bar
+
+.container-account {
+    @include flexCenter (flex, column, center, center, auto, 85vw);
+    position: relative;
+    top: $headerHeight;
+    left: $leftMargin;
+
+    >div:nth-child(1),
+    >div:nth-child(3) {
+        @include flexCenter (flex, row, center, center, 8vh, 100%);
+        @include border (top, none, bottom, none, 'gray200', 1px, solid, all, none);
+        @include color ("gray100", none);
+
+        >span {
+            //@include flexCenter (flex, row, center, center, auto, auto);
+        }
+    }
+
+
+    >div:nth-child(2),
+    >div:nth-child(4) {
+        @include flexCenter (flex, column, center, center, auto, 100%);
+        padding: 10%;
+
+        >div {
+            @include flexCenter (flex, column, center, center, auto, 100%);
+        }
+    }
+}

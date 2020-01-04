@@ -4,6 +4,7 @@ import Person from '@material-ui/icons/Person'
 import { Link } from 'react-router-dom'
 import Rating from '_src/components/common/rating'
 import IconStar from '@material-ui/icons/Star'
+import RemoveCircle from '@material-ui/icons/RemoveCircle'
 import Category from '_src/config/category.json'
 
 const Categories = Category[0]['category']
@@ -23,6 +24,7 @@ class list extends Component {
     }
 
     renderSwitch() {
+
         switch (this.props.source) {
             case 'book':
                 return <ListBook data={this.props.listData} onCartClick={this.props.onClick} />
@@ -32,6 +34,10 @@ class list extends Component {
                 break
             case 'rating':
                 return <ListRating data={this.props.listData} />
+                break
+
+            case 'cart':
+                return <ListCart data={this.props.listData} onRemoveClick={(item) => { this.props.onClick(item) }} />
                 break
             default: break
         }
@@ -47,6 +53,7 @@ const ListBook = (props) => {
             const rating = getTotalRating(item)
 
             return (
+
                 <div key={index} className='item-list'>
 
                     <img src={`/uploads/${item.image}`} alt='' />
@@ -94,7 +101,6 @@ const ListBook = (props) => {
 
                     </div>
 
-
                 </div>
             )
         })
@@ -130,7 +136,7 @@ const ListBook = (props) => {
             default: break;
         }
 
-        history.pushState({ book: id }, document.title, window.location.pathname);
+        history.pushState({ book: id }, document.title, window.location.pathname)
     }
 }
 
@@ -139,7 +145,7 @@ const ListAuthor = (props) => {
         props.data.map((item, index) => {
 
             return (
-                <div key={index} className='item-list'>
+                <div key={index} className='item-list-cart'>
 
                     <span>{item.name}</span>
 
@@ -183,6 +189,28 @@ const ListRating = (props) => {
                     </div>
 
                     <span>{item.review}</span>
+                </div>
+            )
+        })
+
+    )
+}
+
+const ListCart = (props) => {
+
+    return (
+
+        props.data.map((item, index) => {
+
+            return (
+                <div key={index} className='item-list-cart'>
+
+                    <span>{item.book.name}</span>
+                    <span>${item.book.price}</span>
+                    <span>{item.date}</span>
+                    <RemoveCircle onClick={() => {
+                        props.onRemoveClick(item._id)
+                    }} />
                 </div>
             )
         })

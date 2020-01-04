@@ -30,6 +30,9 @@ class bookDetail extends Component {
             bookId = state.book
         }
 
+        console.log(state)
+        console.log(bookId)
+
         return (
 
             <div>
@@ -37,6 +40,7 @@ class bookDetail extends Component {
                 <div>
 
                 </div>
+
                 <div>
 
                     {
@@ -165,6 +169,16 @@ class bookDetail extends Component {
     }
 
     submitReview() {
+
+
+        let isSignedIn = GLOBAL.userId == '' ? false : true
+
+        if (!isSignedIn) {
+            let dvLogin = document.getElementById('dvLogin')
+            dvLogin.click()
+
+            return false
+        }
 
         let date = this.formatDate(new Date(Date.now()))
 

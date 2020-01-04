@@ -3,14 +3,20 @@ import { withApollo } from 'react-apollo'
 import { FETCH_BOOKS } from '_src/components/queries/books'
 import { ADD_CART, FETCH_CART } from '_src/components/queries/cart'
 import List from '_src/components/common/list'
-import Paging from '_src/components/common/paging'
+import Paging from '_src/components/common/pagingDatabase'
 import Search from '@material-ui/icons/Search'
+import Close from '@material-ui/icons/RemoveCircle'
 import Category from '_src/config/category.json'
 import GLOBAL from '_src/components/common/global'
 
 const Categories = Category[0]['category']
 const textMulti = .16
 const textMultiCategory = .08
+const item_per_page = 2
+const dvCategoryHeight = 240
+let activeCategory = 0
+let activeSorting = 'rating'
+let activeAuthor = 0
 
 
 class bookList extends Component {
@@ -19,20 +25,26 @@ class bookList extends Component {
         super(props)
 
         this.state = {
-            arrayRender: [],
             inputText: '',
-            mainData: [],
             filteredData: [],
             heightSort: 0,
-            heightCategory: 0
+            heightCategory: 0,
+            offset: 0,
+            category: 0,
+            categoryText: 'All',
+            sortText: 'rating',
+            author: '',
+            authorText: 'All',
         }
     }
 
     render() {
 
-
         var books = this.state.filteredData
 
+        // if (books.length == 0) {
+        //     history.pushState({ book: null }, document.title, window.location.pathname)
+        // }
 
         return (
 
@@ -42,8 +54,37 @@ class bookList extends Component {
 
                     <div>
 
-                        <div className='floatdivMain'>
-                            <div className='floatdivHeader' onClick={() => { this.setState({ heightSort: this.state.heightSort == 0 ? 100 : 0 }) }} > <span> Sort list </span>
+                        <div className='floatdivHeader' onClick={() => { this.setState({ heightSort: this.state.heightSort == 0 ? 100 : 0 }) }} >
+                            <span> Sort</span>
+                            <span> {this.state.sortText} </span>
+                        </div>
+
+                        <div className='floatdivHeader' onClick={() => { this.setState({ heightCategory: this.state.heightCategory == 0 ? dvCategoryHeight : 0 }) }} >
+                            <span> Category </span>
+                            <span> {this.state.categoryText} </span>
+
+                            {
+                                this.state.category > 0 &&
+                                <Close onClick={() => { this.removeFilter('category') }} />
+                            }
+
+                        </div>
+
+                        <div className='floatdivHeader' onClick={() => { this.setState({ heightCategory: this.state.heightCategory == 0 ? dvCategoryHeight : 0 }) }} >
+                            <span> Author </span>
+                            <span> {this.state.authorText} </span>
+
+                            {
+                                this.state.author != '' &&
+                                <Close onClick={() => { this.removeFilter('author') }} />
+                            }
+
+                        </div>
+
+                        {/* <div className='floatdivMain'>
+                            <div className='floatdivHeader' onClick={() => { this.setState({ heightSort: this.state.heightSort == 0 ? 100 : 0 }) }} >
+                                <span> Sort: &nbsp; </span>
+                                <span> {this.state.sortText} </span>
                             </div>
 
                             <div className='floatdiv' style={{
@@ -64,7 +105,11 @@ class bookList extends Component {
 
 
                         <div className='floatdivMain'>
-                            <div className='floatdivHeader' onClick={() => { this.setState({ heightCategory: this.state.heightCategory == 0 ? 200 : 0 }) }} > <span> Category </span></div>
+
+                            <div className='floatdivHeader' onClick={() => { this.setState({ heightCategory: this.state.heightCategory == 0 ? dvCategoryHeight : 0 }) }} >
+                                <span> Category: &nbsp; </span>
+                                <span> {this.state.categoryText} </span>
+                            </div>
 
                             <div className='floatdiv' style={{
                                 height: this.state.heightCategory,
@@ -80,13 +125,18 @@ class bookList extends Component {
 
                             </div>
 
-                        </div>
+                        </div> */}
 
                     </div>
 
                     <div>
-                        <input value={this.state.inputText} maxLength='20' onChange={(event) => { this.validateAndSearch(event, 'name') }} />
-                        <Search />
+
+                        <input value={this.state.inputText} placeholder='name' maxLength='20' onChange={(event) => { this.validateAndSearch(event, 'name') }} />
+
+                        <a className='searchbutton' onClick={(e) => this.searchBooks()}>
+                            <Search />
+                        </a>
+
                     </div>
 
                 </div>
@@ -101,15 +151,17 @@ class bookList extends Component {
                         books && books.length > 0 &&
 
                         <div className='container-list'>
-                            <List listData={this.state.arrayRender} className='container-list' source={'book'} onClick={(itemid) => { this.cartClicked(itemid) }} />
-                            <Paging array={books} searchText={this.state.inputText} onClick={(data) => { this.GetPaginatedData(data) }} />
+
+                            <List listData={books} className='container-list' source={'book'} onClick={(itemid) => { this.cartClicked(itemid) }} />
+                            <Paging itemCount={this.state.itemCount} sortText={this.state.sortText} onClick={(index) => { this.GetPaginatedData(index) }} />
+
                         </div>
                     }
 
                     {
                         books && books.length == 0 &&
 
-                        <div>
+                        <div style={{ minHeight: '50vh', display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
                             <span> No data</span>
                         </div>
                     }
@@ -121,65 +173,116 @@ class bookList extends Component {
         )
     }
 
-    itemFilters(type, arg) {
-
-        let dataSet = this.state.mainData
-
-        if (type == 1) {//sort
-
-            switch (arg) {
-                case 'rating':
-
-                    dataSet.sort(function (x, y) {
-
-                        if (x.AverageRating[0] == null)
-                            return 1
-                        else if (y.AverageRating[0] == null)
-                            return -1
-                        else return y.AverageRating[0].average - x.AverageRating[0].average
-                    })
-
-                    break
-
-                case 'publish':
-
-                    dataSet.sort(function (x, y) {
-                        return new Date(y.publishYear) - new Date(x.publishYear)
-                    })
-
-                    break
-
-
-                default: break
-            }
-
-            this.setState({ data: dataSet, heightSort: 0 })
-
-        } else {
-
-            let newdataSet = dataSet.filter(e => e.category == arg.id)
-            this.setState({ filteredData: newdataSet, heightCategory: 0 })
-
-        }
-    }
-
     componentDidMount = async () => {
 
         const { client } = this.props
-        const res = await client.query({ query: FETCH_BOOKS })
 
+        const res = await this.runQuery(FETCH_BOOKS, FETCH_BOOKS, { category: 0, author: '', sort: 'rating', search: '', limit: item_per_page, offset: 0 }, 'query')
         if (res.data) {
-            this.setState({ filteredData: res.data.books, mainData: res.data.books })
+
+            const count = res.data.books.count
+            const dataSet = res.data.books.Books
+            this.setState({ filteredData: dataSet, itemCount: count })
         }
     }
 
-    GetPaginatedData(data) {
-        this.setState({ arrayRender: data })
+    componentDidUpdate() {
+
+        if (this.props.sort != null && this.props.sort != undefined) {
+            if (activeSorting != this.props.sort) {
+                activeSorting = this.props.sort
+                this.itemFilters(1, activeSorting)
+            }
+        }
+
+        if (this.props.category != null && this.props.category != undefined) {
+            if (activeCategory != this.props.category) {
+                activeCategory = this.props.category
+                let category = Categories[activeCategory]
+                this.itemFilters(2, category)
+            }
+        }
+
+        if (this.props.author != null && this.props.author != undefined) {
+            if (activeAuthor != this.props.author.id) {
+                activeAuthor = this.props.author.id
+                this.itemFilters(3, { id: activeAuthor, name: this.props.author.name })
+            }
+        }
     }
+
+    itemFilters = async (type, arg) => {
+
+        const sortId = type == 1 ? arg : this.state.sortText
+        const categoryId = type == 2 ? parseInt(arg.id) : parseInt(this.state.category)
+        const authorId = type == 3 ? arg.id : this.state.author
+
+        const res = await this.runQuery(FETCH_BOOKS, FETCH_BOOKS, { category: categoryId, author: authorId, sort: sortId, search: '', limit: item_per_page, offset: 0 }, 'query')
+
+        if (res.data) {
+
+            const dataSet = res.data.books.Books
+
+            if (type == 1) {
+                this.setState({ filteredData: dataSet, itemCount: res.data.books.count, heightSort: 0, sortText: sortId })
+            }
+
+            if (type == 2) {
+                this.setState({ filteredData: dataSet, itemCount: res.data.books.count, heightCategory: 0, category: categoryId, categoryText: arg.name })
+            }
+
+            if (type == 3) {
+                this.setState({ filteredData: dataSet, itemCount: res.data.books.count, author: authorId, authorText: arg.name })
+            }
+        }
+    }
+
+    removeFilter(type) {
+
+        switch (type) {
+
+            case 'author':
+                this.itemFilters(3, { id: '', name: 'All' })
+                break
+
+            case 'category':
+                let category = Categories[0]
+                this.itemFilters(2, category)
+                break
+
+            default: break
+        }
+    }
+
+    GetPaginatedData = async (index) => {
+
+        const _offset = index * item_per_page
+
+        const res = await this.runQuery(FETCH_BOOKS, FETCH_BOOKS, { category: this.state.category, author: this.state.author, sort: this.state.sortText, search: '', limit: item_per_page, offset: _offset }, 'query')
+        if (res.data) {
+            this.setState({ filteredData: res.data.books.Books, itemCount: res.data.books.count })
+        }
+    }
+
+    searchBooks = async (index) => {
+
+        const { client } = this.props
+
+        const res = await this.runQuery(FETCH_BOOKS, FETCH_BOOKS, { category: 0, sort: this.state.sortText, search: this.state.inputText, limit: item_per_page, offset: 0 }, 'query')
+        if (res.data) {
+
+            const count = res.data.books.count
+            const dataSet = res.data.books.Books
+            this.setState({ filteredData: dataSet, itemCount: count, category: 0, categoryText: Categories[0].name })
+        }
+    }
+
 
     validateAndSearch(event, type) {
 
-        let PatterText = /^[a-zA-Z0-9]+$/ //  /^[a-zA-Z]+$/
+        //let PatterText = /^[a-zA-Z0-9]+$/ //  /^[a-zA-Z]+$/
+        let PatterText = /^[a-zA-Z0-9,.!? ]*$/
+
 
         if (event.target.value != '' && !PatterText.test(event.target.value))
             return
@@ -192,6 +295,7 @@ class bookList extends Component {
 
             default: break;
         }
+
     }
 
     handleSelectChange(event, type) {
@@ -218,8 +322,9 @@ class bookList extends Component {
         const { client } = this.props
 
         if (type == 'query') {
-            const res = await client.query({ query: _query })
+            const res = await client.query({ query: _query, variables: _variable })
             return res
+
         } else {
 
             const res = await client.mutate({
@@ -232,7 +337,15 @@ class bookList extends Component {
     }
 
     async cartClicked(itemid) {
-        this.runQuery(ADD_CART, FETCH_CART, { userId: "5dec970b1806381dbeb73f4d", bookId: itemid }, 'mutate')//"GLOBAL.userId"
+
+        let isSignedIn = GLOBAL.userId == '' ? false : true
+
+        if (!isSignedIn) {
+            let dvLogin = document.getElementById('dvLogin')
+            dvLogin.click()
+        } else {
+            this.runQuery(ADD_CART, FETCH_CART, { userId: "5dec970b1806381dbeb73f4d", bookId: itemid, date: '11 Nov 2019' }, 'mutate')//"GLOBAL.userId"
+        }
     }
 
 }

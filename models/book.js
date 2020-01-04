@@ -14,6 +14,10 @@ const bookSchema = new Schema({
 
     authorID: String,
     image: String,
+
+    averageRating: Number,
+    ratingCount: Number,
+
 })
 
 export const BookModel = mongoose.model('Book', bookSchema);

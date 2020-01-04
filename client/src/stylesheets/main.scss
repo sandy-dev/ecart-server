@@ -4,7 +4,8 @@ $inputHeight: 35px;
 $inputHeightList: 32px;
 $inputWidth: 30vw;
 $sidebarMenuColor: 'tcs-dark';
-$leftMargin: 15%; //due to side bar
+$leftMargin: 15vw; //due to side bar
+$fontSizeText: .8rem;
 
 
 @import './sass/mixin.scss';
@@ -36,8 +37,11 @@ $leftMargin: 15%; //due to side bar
 
 
         >div:nth-child(1) {
+
+
             @include flexCenter (flex, row, center, center, auto, auto);
             @include spaceMargin(none, none, right, none, none, 2%);
+            cursor: pointer;
 
             >div {
                 @include flexCenter (flex, row, center, center, auto, auto);
@@ -130,7 +134,7 @@ $leftMargin: 15%; //due to side bar
 
 .sidebar {
     @include flex (flex, column);
-    @include heightWidth (100vh, 15%);
+    @include heightWidth (100vh, 15vw);
     @include color ("white", none);
     @include position (8vh, none, none, none, fixed);
     z-index: 99;
@@ -139,31 +143,23 @@ $leftMargin: 15%; //due to side bar
 
 .sidebar-menu {
     @include flexCenter (flex, column, center, center, auto, 100%);
-    @include border (none, none, bottom, none, 'white', 1px, solid, none, none);
+    @include border (none, none, bottom, none, 'white', 2px, solid, none, none);
 
     >div:nth-child(1) {
 
-        @include flexCenter (flex, row, center, center, 8vh, 100%);
+        @include flexCenter (flex, row, center, center, auto, 100%);
         @include color ("gray200", none);
 
-        >div {
-            @include position(2%, none, none, 4%, relative);
-            @include heightWidth (1.5vw, 1.5vw);
-
-            >svg {
-                @include color (none, $sidebarMenuColor);
-                @include heightWidth (100%, 100%);
-            }
-        }
-
         a {
-            @include flexCenter (flex, row, center, space-around, 100%, 100%);
+            @include flexCenter (flex, row, center, center, 6vh, 100%);
             @include color (none, $sidebarMenuColor);
             text-decoration: none;
-            @include spacePadding(none, none, none, none, left, 40px);
 
             >svg {
+                position: relative;
+                left: 25%;
                 @include color (none, 'transparent');
+                @include heightWidth (3vh, 3vh);
             }
 
         }
@@ -173,10 +169,10 @@ $leftMargin: 15%; //due to side bar
 
         @include flexCenter (flex, column, center, center, auto, 100%);
         transition: all .5s ease-out;
-        @include color ("gray100", none);
+        @include color ("white", none);
 
         >a {
-            @include border (none, none, bottom, none, 'white', 1px, solid, none);
+            // @include border (none, none, bottom, none, 'gray200', 1px, solid, none);
             @include flexCenter (flex, row, center, space-around, 100%, 100%);
             text-decoration: none;
 
@@ -186,9 +182,15 @@ $leftMargin: 15%; //due to side bar
             }
 
             >span {
-                @include color (none, $sidebarMenuColor);
-                font-weight: 500;
+                @include color (none, "gray600");
+                font-weight: 400;
+                //@include getSpan (map-get($text-colors, $sidebarMenuColor), 2.4vmin, 500);
             }
+        }
+
+        .border-1 {
+            @include border (none, none, bottom, none, 'gray100', .5px, solid, none, none);
+            padding: 2%;
         }
     }
 }
@@ -198,6 +200,13 @@ $leftMargin: 15%; //due to side bar
     >svg {
         @include color (none, "black");
         fill: darkgray;
+        @include heightWidth (3vh, 3vh !important);
+    }
+}
+
+.selectedFilter {
+    >span {
+        @include color (none, "orange300");
     }
 }
 
@@ -205,7 +214,7 @@ $leftMargin: 15%; //due to side bar
     @include color ("lkdn-4", none);
     padding-bottom: 2%;
     @include flexCenter (flex, column, center, flex-end, 20vh, auto);
-    //margin-left: $leftMargin;
+    margin-left: $leftMargin;
 }
 
 
@@ -390,13 +399,34 @@ input[type=submit]:hover {
 .item-list {
 
     @include flexCenter (flex, row, center, space-evenly, auto, auto);
-    @include border (none, none, bottom, left, 'gray200', 1px, solid, none, none);
+    @include border (none, none, bottom, none, 'gray200', 1px, solid, none, none);
     min-width: 80vw;
     @include spaceMargin(none, none, none, bottom, none, 20px);
     @include spacePadding(none, none, none, bottom, none, 20px);
 
     >img {
         @include flexCenter (flex, row, center, center, 30vh, 15vw);
+    }
+
+}
+
+.item-list-cart {
+
+    @include flexCenter (flex, row, center, space-evenly, auto, auto);
+    @include border (none, none, bottom, none, 'gray200', 1px, solid, none, none);
+    @include spaceMargin(none, none, none, bottom, none, 20px);
+    @include spacePadding(none, none, none, bottom, none, 20px);
+
+    >img {
+        @include flexCenter (flex, row, center, center, 30vh, 15vw);
+    }
+
+    >span {
+        width: 20vw;
+    }
+
+    >svg {
+        cursor: pointer;
     }
 
 }
@@ -409,20 +439,20 @@ input[type=submit]:hover {
     >span,
     a {
         @include flexCenter (flex, row, center, flex-start, auto, 100%);
-        @include getSpan('gray800', 14px, 500);
+        @include getSpan('gray800', $fontSizeText, 500);
 
         >span {
             @include spaceMargin(none, none, right, none, none, 5%);
-            @include getSpan('gray500', 14px, 700);
+            @include getSpan('gray500', $fontSizeText, 700);
         }
     }
 
     a {
-        @include flexCenter (flex, row, center, center, $inputHeightList, 10vw);
+        @include flexCenter (flex, row, center, center, $inputHeightList, 8vw);
         white-space: nowrap;
         border: 1px solid map-get($text-colors, 'blue300');
-        background-image: linear-gradient(to left, map-get($text-colors, 'blue400') 0%, map-get($text-colors, 'blue600') 50%, map-get($text-colors, 'blue400') 100%);
-        //@include color('google-blue', none);
+        //background-image: linear-gradient(to left, map-get($text-colors, 'blue400') 0%, map-get($text-colors, 'blue600') 50%, map-get($text-colors, 'blue400') 100%);
+        @include color('google-blue', none);
         transition: 0.5s;
         text-transform: uppercase;
         font-weight: 500;
@@ -505,12 +535,33 @@ input[type=submit]:hover {
 }
 
 .floatdivHeader {
-    @include flexCenter (flex, row, center, center, 5vh, 12vw);
-    @include color ("orange200", none);
-    cursor: pointer;
+    @include flexCenter (flex, row, center, center, auto, auto);
+    margin-right: 2.5vw;
 
     >span {
-        font-size: 15px;
+        font-size: 13px;
+        vertical-align: bottom;
+        width: 100%;
+        text-align: center;
+        padding-right: 5%;
+        padding-left: 5%;
+
+        white-space: nowrap;
+    }
+
+    >svg {
+        @include heightWidth(12px, 12px);
+        fill: map-get($text-colors, "gray500");
+        padding-top: 2px;
+    }
+
+    >span:nth-child(1) {
+        @include border (none, right, none, none, 'gray400', 1px, solid, none, none);
+        @include getSpan('gray600', 13px, 500);
+    }
+
+    >span:nth-child(2) {
+        @include getSpan('orange600', 13px, 500);
     }
 }
 
@@ -527,3 +578,4 @@ input[type=submit]:hover {
 @import './sass/home.scss';
 @import './sass/landing.scss';
 @import './sass/authors.scss';
+@import './sass/account.scss';

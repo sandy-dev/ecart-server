@@ -134,8 +134,6 @@ class AddClass extends Component {
 
     componentDidMount = async () => {
 
-        console.log('componentDidMount')
-
         const { client } = this.props
 
         if (this.props.location.id != null && this.props.location.id != undefined) {

@@ -54,33 +54,37 @@ class header extends Component {
 
                 <div>
 
-                    <div>
+                    {
+                        this.props.isSignedIn &&
+                        <div></div>
+                    }
 
-                        <AddShoppingCartRounded>
-                        </AddShoppingCartRounded>
+                    {
+                        !this.props.isSignedIn &&
 
-                        <Subscription subscription={cartAddedSub}>
-                            {({ data }) => {
-                                if (data) {
-                                    return <div><span> {data.cartAdded.count} </span></div>
-                                } else
-                                    return ''
+                        <div>
+                            <Link to={"/account"}>
+                                <AddShoppingCartRounded />
+                            </Link>
 
-                            }}
-                        </Subscription>
+                            <Subscription subscription={cartAddedSub}>
+                                {({ data }) => {
+                                    if (data) {
+                                        return <div><span> {data.cartAdded.count} </span></div>
+                                    } else
+                                        return <div><span> {this.state.cartCount} </span></div>
+
+                                }}
+                            </Subscription>
+                        </div>
+                    }
 
 
-
-
-                    </div>
-
-                    <div onClick={(event) => this.toggleDivMenu()} >
-
+                    <div id='dvLogin' onClick={(event) => this.toggleDivMenu()} >
 
                         {
                             this.props.isSignedIn ? <span>Log Out</span> : <span>Login/Register</span>
                         }
-
 
                     </div>
 
@@ -96,6 +100,7 @@ class header extends Component {
 
 
                     </div>
+
                 </div>
 
             </div>
@@ -110,7 +115,7 @@ class header extends Component {
         const res = await client.query({ query: FETCH_CART, variables: { userId: '5dec970b1806381dbeb73f4d' } })//GLOBAL.userId 
 
         if (res.data) {
-            this.setState({ cartCount: res.data.cart.length })
+            this.setState({ cartCount: res.data.carts.length })
         }
     }
 

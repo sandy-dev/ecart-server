@@ -29,10 +29,15 @@ const ADD_USER = gql`
   `
 
 
-const UserSync = () => {
+const UserSync = (props) => {
 
   const [_user, setUser] = useState(null)
   const [getUser, { loading, data }] = useLazyQuery(GET_USER)
+
+  if (props.user && props.user.uid)
+    GLOBAL.userId = props.user.uid
+  else
+    GLOBAL.userId = ''
 
   useEffect(() => {
     //getUser({ variables: { uid: '5dec8856afcd9e1c6b71b476' } }) 
@@ -41,8 +46,8 @@ const UserSync = () => {
   if (loading) { }
 
   if (data) {
-    
-    
+
+
     if (data.user == null) {
       return <UserAdd />
     }

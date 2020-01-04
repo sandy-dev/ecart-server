@@ -21,14 +21,16 @@ class books extends Component {
                         {/* <span><h2>Book List</h2></span> */}
                     </div>
 
-                    <BookList />
+                    <BookList
+                        category={this.props.location.category}
+                        sort={this.props.location.sort}
+                        author={this.props.location.author} />
 
                 </div>
 
                 <div id='dvBookDetail'>
 
-                    <div>
-                        {/* <span><h2>Book detail</h2></span> */}
+                    <div style={{ backgroundColor: this.props.isSignedIn ? '#F5F5F5' : '#F5F5F5' }}>
                     </div>
 
                     <BookDetail />
