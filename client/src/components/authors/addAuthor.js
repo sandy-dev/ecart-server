@@ -2,7 +2,7 @@ import React, { Component, useState, useEffect } from 'react'
 import gql from 'graphql-tag'
 import { Query } from 'react-apollo'
 import { useMutation } from '@apollo/react-hooks'
-import FileUpload from '_src/components/common/FileUpload'
+import FileUpload from '_src/components/common/fileUpload'
 import { FETCH_AUTHORS, ADD_AUTHOR } from '_src/components/queries/authors'
 
 const AddAuthor = () => {

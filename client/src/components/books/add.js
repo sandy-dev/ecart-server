@@ -1,6 +1,6 @@
 import React, { Component } from 'react'
 import { graphql, Query, compose, withApollo } from 'react-apollo'
-import FileUpload from '_src/components/common/FileUpload'
+import FileUpload from '_src/components/common/fileUpload'
 import { FETCH_BOOKS, ADD_BOOK, FETCH_BOOK_ID, UPDATE_BOOK } from '_src/components/queries/books'
 import { FETCH_AUTHORS } from '_src/components/queries/authors'
 import Category from '_src/config/category.json'

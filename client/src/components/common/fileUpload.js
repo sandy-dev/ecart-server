@@ -48,7 +48,7 @@ export default class FileUpload extends Component {
 
         try {
 
-            fetch('http://localhost:5000/upload', {
+            fetch('/upload', {
                 method: 'post',
                 headers: {
                 },
