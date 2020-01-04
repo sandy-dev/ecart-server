@@ -42,8 +42,6 @@ var _schema2 = _interopRequireDefault(_schema);
 
 var _resolvers = require('./schema/resolvers');
 
-require('@babel/polyfill');
-
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 var schema = (0, _graphqlTools.makeExecutableSchema)({
