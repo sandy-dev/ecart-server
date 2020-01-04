@@ -730,6 +730,30 @@ var resolvers = exports.resolvers = {
                     }
                 }, _callee21, _this8);
             }))();
+        },
+        addAuthor: function addAuthor(root, args) {
+            var _this9 = this;
+
+            return (0, _asyncToGenerator3.default)( /*#__PURE__*/_regenerator2.default.mark(function _callee22() {
+                var author;
+                return _regenerator2.default.wrap(function _callee22$(_context22) {
+                    while (1) {
+                        switch (_context22.prev = _context22.next) {
+                            case 0:
+                                _context22.next = 2;
+                                return _author.AuthorModel.create(args);
+
+                            case 2:
+                                author = _context22.sent;
+                                return _context22.abrupt('return', author);
+
+                            case 4:
+                            case 'end':
+                                return _context22.stop();
+                        }
+                    }
+                }, _callee22, _this9);
+            }))();
         }
     },
 
