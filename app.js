@@ -41,25 +41,25 @@ app.post('/upload', (req, res) => {
     })
 })
 
-app.use(express.static('public'))
-// app.get('*', (req, res) => {
-//     //res.sendFile(path.resolve(__dirname, 'public', 'index.html'))
-// })
-
 const mongoUrlLocal = 'mongodb://localhost:27017/test3'
-const mongoUrlLive = 'mongodb://127.0.0.1:27017/test3'
+const mongoUrlLive = 'mongodb+srv://test1:<password>@tmcluster-sptsd.mongodb.net/test?retryWrites=true&w=majority'
 mongoose.Promise = global.Promise
 mongoose.connect(mongoUrlLive)
 mongoose.connection.once('open', () => {
     console.log('conneted to database')
 })
 
-const PORT = 5000
+const PORT = process.env.PORT || 5000
 
 app.use('/graphql', bodyParser.json(), graphqlHTTP({
     schema: schema,
     graphiql: true
 }))
+
+app.use(express.static('public'))
+app.get('*', (req, res) => {
+    res.sendFile(path.resolve(__dirname, 'public', 'index.html'))
+})
 
 const server = createServer(app)
 

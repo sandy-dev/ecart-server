@@ -1,4 +1,4 @@
-import {ApolloClient,InMemoryCache} from 'apollo-boost'
+import { ApolloClient, InMemoryCache } from 'apollo-boost'
 import { ApolloProvider } from 'react-apollo'
 import { split } from 'apollo-link'
 import { HttpLink } from 'apollo-link-http'
@@ -7,7 +7,7 @@ import { getMainDefinition } from 'apollo-utilities';
 
 
 const httpLink = new HttpLink({
-    uri: 'http://localhost:5000/graphql'
+    uri: '/graphql'
 })
 
 const wsLink = new WebSocketLink({
