@@ -59,12 +59,9 @@ app.post('/upload', function (req, res) {
         return res.status(400).json({ msg: 'No file uploaded' });
     }
 
-    console.error(req)
-    console.error(req.files)
-
     var file = req.files.file;
-
-    file.mv(__dirname + '/client/public/uploads/' + file.name, function (err) {
+    //__dirname
+    file.mv(process.cwd() + '/client/public/uploads/' + file.name, function (err) {
         if (err) {
             console.error(err);
             return res.status(500).send(err);
