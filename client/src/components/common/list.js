@@ -149,19 +149,9 @@ const ListAuthor = (props) => {
 
                     <span>{item.name}</span>
 
-                    {/* <Link to={"/books/add"} className='list-details-actions tooltip'>
-                        <Edit />
-                        <span className="tooltiptext">Edit</span>
+                    <Link to={{ pathname: '/books/', author: { id: item.id, name: item.name } }}>
+                        <span>Books</span>
                     </Link>
-                    <Link to={{
-                        pathname: "/books/detail",
-                        hash: `#${item.id}`,
-                        state: { isAdmin: true }
-                    }}
-                        className='list-details-actions tooltip'>
-                        <Details />
-                        <span className="tooltiptext">Detail</span>
-                    </Link> */}
 
                 </div>
             )
