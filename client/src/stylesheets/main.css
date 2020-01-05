@@ -1502,6 +1502,7 @@ input[type=submit]:hover {
   width: 100%;
   padding-top: 2%;
   padding-bottom: 2%;
+  min-height: 80vh;
 }
 
 .container-author-detail {
