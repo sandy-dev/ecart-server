@@ -20,7 +20,6 @@ class Auth extends Component {
     componentDidMount() {
         firebase.auth().onAuthStateChanged(user => {
 
-            console.log('onAuthStateChanged')
             this.setState({ isSignedIn: !!user })
         })
     }

@@ -30,9 +30,6 @@ class bookDetail extends Component {
             bookId = state.book
         }
 
-        console.log(state)
-        console.log(bookId)
-
         return (
 
             <div>
