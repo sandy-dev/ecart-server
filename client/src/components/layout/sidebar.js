@@ -33,6 +33,8 @@ export class sidebar extends Component {
 
     render() {
 
+        console.log(this.props.isSignedIn)
+
         return (
 
             <div className="sidebar">
@@ -49,14 +51,14 @@ export class sidebar extends Component {
 
                     </div>
 
-                    <div style={{ height: this.state.heightBook }}>
+                    {/* <div style={{ height: this.state.heightBook }}>
 
                         <NavLink to={"/books/add"} activeClassName="selected">
                             <span style={{ fontSize: FontMultiplier * this.state.heightBook }}>Add</span>
                             <ArrowForwardIos />
                         </NavLink>
 
-                    </div>
+                    </div> */}
 
                 </div>
 
@@ -70,23 +72,27 @@ export class sidebar extends Component {
 
                     </div>
 
-                    <div style={{ height: this.state.heightAuthor }}>
+                    {/* <div style={{ height: this.state.heightAuthor }}>
                         <NavLink to={"/authors/add"} activeClassName="selected"> <span style={{ fontSize: FontMultiplier * this.state.heightAuthor }}>Add</span> </NavLink>
-                    </div>
+                    </div> */}
 
                 </div>
 
-                <div className='sidebar-menu'>
+                {
+                    this.props.isSignedIn &&
+                    <div className='sidebar-menu'>
 
-                    <div>
+                        <div>
 
-                        <NavLink to={"/account"} exact onClick={() => { this.toggleMenu('account') }} activeClassName="selected">
-                            Account  <ArrowForwardIos />
-                        </NavLink>
+                            <NavLink to={"/account"} exact onClick={() => { this.toggleMenu('account') }} activeClassName="selected">
+                                Account  <ArrowForwardIos />
+                            </NavLink>
+
+                        </div>
 
                     </div>
+                }
 
-                </div>
 
                 <br />
                 <div className='sidebar-menu'>
@@ -152,7 +158,7 @@ export class sidebar extends Component {
 
 
                     <div style={{ height: this.state.heightAuthorFilter, overflowY: 'scroll', overflowX: 'hidden' }}>
-                        <br />
+                        <br /> <br /> <br /> <br /><br />
                         {
                             this.state.lstAuthors.length > 0 &&
                             this.state.lstAuthors.map((item, index) => {

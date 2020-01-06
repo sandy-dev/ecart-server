@@ -11,7 +11,7 @@ import GLOBAL from '_src/components/common/global'
 const Categories = Category[0]['category']
 const textMulti = .16
 const textMultiCategory = .08
-const item_per_page = 10
+const item_per_page = 5
 
 
 class bookList extends Component {

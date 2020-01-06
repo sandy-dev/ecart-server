@@ -12,7 +12,7 @@ import GLOBAL from '_src/components/common/global'
 const Categories = Category[0]['category']
 const textMulti = .16
 const textMultiCategory = .08
-const item_per_page = 2
+const item_per_page = 5
 const dvCategoryHeight = 240
 let activeCategory = 0
 let activeSorting = 'rating'

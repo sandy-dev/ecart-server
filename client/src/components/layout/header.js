@@ -55,12 +55,12 @@ class header extends Component {
                 <div>
 
                     {
-                        this.props.isSignedIn &&
+                        !this.props.isSignedIn &&
                         <div></div>
                     }
 
                     {
-                        !this.props.isSignedIn &&
+                        this.props.isSignedIn &&
 
                         <div>
                             <Link to={"/account"}>
