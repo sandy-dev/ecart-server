@@ -2,7 +2,7 @@ import React, { Component } from 'react'
 import ArrowLeft from '@material-ui/icons/ArrowLeft'
 import ArrowRight from '@material-ui/icons/ArrowRight'
 
-const itemsPerPage = 2
+const itemsPerPage = 5
 let currentIndex = 0
 let sortText = ''
 
