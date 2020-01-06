@@ -188,6 +188,25 @@ $fontSizeText: .8rem;
             }
         }
 
+        >div {
+            >a {
+                // @include border (none, none, bottom, none, 'gray200', 1px, solid, none);
+                @include flexCenter (flex, row, center, space-around, 100%, 100%);
+                text-decoration: none;
+
+
+                >svg {
+                    @include color (none, 'transparent');
+                }
+
+                >span {
+                    @include color (none, "gray600");
+                    font-weight: 400;
+                    //@include getSpan (map-get($text-colors, $sidebarMenuColor), 2.4vmin, 500);
+                }
+            }
+        }
+
         .border-1 {
             @include border (none, none, bottom, none, 'gray100', .5px, solid, none, none);
             padding: 2%;

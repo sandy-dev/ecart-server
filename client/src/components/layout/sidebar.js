@@ -157,19 +157,20 @@ export class sidebar extends Component {
                     </div>
 
 
-                    <div style={{ height: this.state.heightAuthorFilter, overflowY: 'scroll', overflowX: 'hidden' }}>
-                        <br /> <br /> <br /> <br /><br />
+                    <div style={{ position: 'relative', height: this.state.heightAuthorFilter, overflowY: 'scroll', overflowX: 'hidden' }}>
                         {
                             this.state.lstAuthors.length > 0 &&
-                            this.state.lstAuthors.map((item, index) => {
-                                return (
-                                    <NavLink
-                                        to={{ pathname: '/books/', author: { id: item.id, name: item.name } }}
-                                        className='border-1' activeClassName="selected" key={index}>
-                                        <span style={{ fontSize: FontMultiplierCategory * this.state.heightAuthorFilter }}>{item.name} </span>
-                                    </NavLink>
-                                )
-                            })
+                            <div style={{ position: 'absolute', top: 0 }}>
+                                {this.state.lstAuthors.map((item, index) => {
+                                    return (
+                                        <NavLink
+                                            to={{ pathname: '/books/', author: { id: item.id, name: item.name } }}
+                                            className='border-1' activeClassName="selected" key={index}>
+                                            <span style={{ fontSize: FontMultiplierCategory * this.state.heightAuthorFilter }}>{item.name} </span>
+                                        </NavLink>
+                                    )
+                                })}
+                            </div>
                         }
 
                     </div>

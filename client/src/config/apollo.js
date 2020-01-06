@@ -7,7 +7,7 @@ import { getMainDefinition } from 'apollo-utilities';
 
 
 const httpLink = new HttpLink({
-    uri: '/graphql'
+    uri: '/graphql'  //https://confikr-cart-graphql.herokuapp.com/
 })
 
 const wsLink = new WebSocketLink({
