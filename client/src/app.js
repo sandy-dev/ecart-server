@@ -19,6 +19,7 @@ import AddBook from '_src/components/books/add'
 import BookDetail from '_src/components/books/details'
 
 import { AplloClient, ApolloProvider } from '_src/config/apollo'
+import GLOBAL from '_src/components/common/global'
 
 
 class App extends Component {
@@ -78,6 +79,9 @@ class App extends Component {
         firebase.auth().onAuthStateChanged(user => {
 
             if (!!user) {
+
+                GLOBAL.userId = user.uid
+
                 this.setState({
                     isSignedIn: !!user,
                     _user: {
@@ -88,6 +92,11 @@ class App extends Component {
                     }
                 })
             } else {
+
+                GLOBAL.userId = ''
+                GLOBAL.name = ''
+                GLOBAL.email = ''
+
                 this.setState({
                     isSignedIn: false,
                     _user: []

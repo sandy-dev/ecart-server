@@ -7,6 +7,7 @@ import ArrowForwardIos from '@material-ui/icons/ArrowForwardIos'
 import Category from '_src/config/category.json'
 import { FETCH_AUTHORS } from '_src/components/queries/authors'
 import { withApollo } from 'react-apollo'
+import GLOBAL from '_src/components/common/global'
 
 const Categories = Category[0]['category']
 const FontMultiplier = 0.28
@@ -33,7 +34,6 @@ export class sidebar extends Component {
 
     render() {
 
-        console.log(this.props.isSignedIn)
 
         return (
 
@@ -51,14 +51,17 @@ export class sidebar extends Component {
 
                     </div>
 
-                    {/* <div style={{ height: this.state.heightBook }}>
+                    {
+                        GLOBAL.email == 'confikr.lab@gmail.com' &&
+                        <div style={{ height: this.state.heightBook }}>
 
-                        <NavLink to={"/books/add"} activeClassName="selected">
-                            <span style={{ fontSize: FontMultiplier * this.state.heightBook }}>Add</span>
-                            <ArrowForwardIos />
-                        </NavLink>
+                            <NavLink to={"/books/add"} activeClassName="selected">
+                                <span style={{ fontSize: FontMultiplier * this.state.heightBook }}>Add</span>
+                                <ArrowForwardIos />
+                            </NavLink>
 
-                    </div> */}
+                        </div>
+                    }
 
                 </div>
 
@@ -72,9 +75,12 @@ export class sidebar extends Component {
 
                     </div>
 
-                    {/* <div style={{ height: this.state.heightAuthor }}>
-                        <NavLink to={"/authors/add"} activeClassName="selected"> <span style={{ fontSize: FontMultiplier * this.state.heightAuthor }}>Add</span> </NavLink>
-                    </div> */}
+                    {
+                        GLOBAL.email == 'confikr.lab@gmail.com' &&
+                        <div style={{ height: this.state.heightAuthor }}>
+                            <NavLink to={"/authors/add"} activeClassName="selected"> <span style={{ fontSize: FontMultiplier * this.state.heightAuthor }}>Add</span> </NavLink>
+                        </div>
+                    }
 
                 </div>
 

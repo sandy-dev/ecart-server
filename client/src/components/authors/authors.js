@@ -1,9 +1,9 @@
 import React, { Component } from 'react'
-import { Query } from 'react-apollo'
+import { Query, withApollo } from 'react-apollo'
 import List from '_src/components/common/list'
 import Paging from '_src/components/common/paging'
 import Search from '@material-ui/icons/Search'
-import { FETCH_AUTHORS } from '_src/components/queries/authors'
+import { FETCH_AUTHORS,REMOVE_AUTHOR } from '_src/components/queries/authors'
 
 export class authors extends Component {
 
@@ -48,7 +48,7 @@ export class authors extends Component {
                                 return (
 
                                     <div>
-                                        <List listData={this.state.arrayRender} source={'author'} />
+                                        <List listData={this.state.arrayRender} source={'author'} onRemoveClick={(item) => { this.removeAuthor(item) }} />
                                         <Paging array={data.authors} searchText={this.state.inputText} onClick={(data) => { this.GetPaginatedData(data) }} />
                                     </div>
                                 )
@@ -84,6 +84,16 @@ export class authors extends Component {
             default: break;
         }
     }
+
+    removeAuthor = async (item) => {
+
+        const { client } = this.props
+        const res = await client.mutate({
+            mutation: REMOVE_AUTHOR,
+            variables: { id: item },
+            refetchQueries: [{ query: FETCH_AUTHORS }]
+        })
+    }
 }
 
-export default authors
+export default withApollo(authors)

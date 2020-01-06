@@ -6,6 +6,7 @@ import Rating from '_src/components/common/rating'
 import IconStar from '@material-ui/icons/Star'
 import RemoveCircle from '@material-ui/icons/RemoveCircle'
 import Category from '_src/config/category.json'
+import GLOBAL from '_src/components/common/global'
 
 const Categories = Category[0]['category']
 
@@ -30,7 +31,7 @@ class list extends Component {
                 return <ListBook data={this.props.listData} onCartClick={this.props.onClick} />
                 break
             case 'author':
-                return <ListAuthor data={this.props.listData} />
+                return <ListAuthor data={this.props.listData} onRemoveClick={(item) => { this.props.onRemoveClick(item) }} />
                 break
             case 'rating':
                 return <ListRating data={this.props.listData} />
@@ -90,14 +91,18 @@ const ListBook = (props) => {
                             Add To Cart
                         </a>
 
-                        <Link to={{
-                            pathname: '/books/add/',
-                            id: item.id
-                        }}
-                            className='list-details-actions tooltip'>
-                            <Edit />
-                            <span className="tooltiptext">Edit</span>
-                        </Link>
+                        {
+                            GLOBAL.email == 'confikr.lab@gmail.com' &&
+                            <Link to={{
+                                pathname: '/books/add/',
+                                id: item.id
+                            }}
+                                className='list-details-actions tooltip'>
+                                <Edit />
+                                {/* <span>Edit</span> */}
+                            </Link>
+                        }
+
 
                     </div>
 
@@ -152,6 +157,13 @@ const ListAuthor = (props) => {
                     <Link to={{ pathname: '/books/', author: { id: item.id, name: item.name } }}>
                         <span>Books</span>
                     </Link>
+
+                    {
+                        GLOBAL.email == 'confikr.lab@gmail.com' &&
+                        <RemoveCircle onClick={() => {
+                            props.onRemoveClick(item.id)
+                        }} />
+                    }
 
                 </div>
             )

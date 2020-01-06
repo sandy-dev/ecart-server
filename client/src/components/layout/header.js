@@ -70,9 +70,22 @@ class header extends Component {
                             <Subscription subscription={cartAddedSub}>
                                 {({ data }) => {
                                     if (data) {
-                                        return <div><span> {data.cartAdded.count} </span></div>
+                                        return <div>
+                                            <span>
+                                                <Link to={"/account"}>
+                                                    {data.cartAdded.count}
+                                                </Link>
+                                            </span>
+                                        </div>
                                     } else
-                                        return <div><span> {this.state.cartCount} </span></div>
+                                        return <div>
+                                            <span>
+                                                <Link to={"/account"}>
+                                                    {this.state.cartCount}
+                                                </Link>
+
+                                            </span>
+                                        </div>
 
                                 }}
                             </Subscription>
@@ -108,18 +121,19 @@ class header extends Component {
     }
 
     componentDidMount = async () => {
-
         window.addEventListener('scroll', this.handleScroll, true)
-
-        const { client } = this.props
-        const res = await client.query({ query: FETCH_CART, variables: { userId: '5dec970b1806381dbeb73f4d' } })//GLOBAL.userId 
-
-        if (res.data) {
-            this.setState({ cartCount: res.data.carts.length })
-        }
     }
 
-    componentWillUpdate() {
+    componentWillUpdate = async () => {
+
+        if (GLOBAL.userId != '') {
+            const { client } = this.props
+            const res = await client.query({ query: FETCH_CART, variables: { userId: GLOBAL.userId } })
+
+            if (res.data && res.data.carts.length != this.state.cartCount) {
+                this.setState({ cartCount: res.data.carts.length })
+            }
+        }
 
         if (this.state.opacity == 1)
             this.setState({ opacity: 0 })

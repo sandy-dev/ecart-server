@@ -35,6 +35,7 @@ class bookList extends Component {
             sortText: 'rating',
             author: '',
             authorText: 'All',
+            isLoading: false
         }
     }
 
@@ -143,12 +144,12 @@ class bookList extends Component {
 
                 <div>
 
-                    {/* {
-                        data.loading && <div>Loading..</div>
-                    } */}
+                    {
+                        this.state.isLoading && <div>Loading..</div>
+                    }
 
                     {
-                        books && books.length > 0 &&
+                        !this.state.isLoading && books && books.length > 0 &&
 
                         <div className='container-list'>
 
@@ -159,7 +160,7 @@ class bookList extends Component {
                     }
 
                     {
-                        books && books.length == 0 &&
+                        !this.state.isLoading && books && books.length == 0 &&
 
                         <div style={{ minHeight: '50vh', display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
                             <span> No data</span>
@@ -176,13 +177,17 @@ class bookList extends Component {
     componentDidMount = async () => {
 
         const { client } = this.props
+        this.setState({ isLoading: true })
 
         const res = await this.runQuery(FETCH_BOOKS, FETCH_BOOKS, { category: 0, author: '', sort: 'rating', search: '', limit: item_per_page, offset: 0 }, 'query')
+
         if (res.data) {
 
             const count = res.data.books.count
             const dataSet = res.data.books.Books
-            this.setState({ filteredData: dataSet, itemCount: count })
+            this.setState({ filteredData: dataSet, itemCount: count, isLoading: false })
+        } else {
+            this.setState({ isLoading: false })
         }
     }
 
@@ -344,8 +349,23 @@ class bookList extends Component {
             let dvLogin = document.getElementById('dvLogin')
             dvLogin.click()
         } else {
-            this.runQuery(ADD_CART, FETCH_CART, { userId: "5dec970b1806381dbeb73f4d", bookId: itemid, date: '11 Nov 2019' }, 'mutate')//"GLOBAL.userId"
+            const { client } = this.props
+            await client.mutate({
+                mutation: ADD_CART,
+                variables: { userId: GLOBAL.userId, bookId: itemid, date: this.formatDate(new Date(Date.now())) },
+                refetchQueries: [{ query: FETCH_CART, variables: { userId: GLOBAL.userId } }]
+            })
+
+            //this.runQuery(ADD_CART, FETCH_CART, { userId: GLOBAL.userId, bookId: itemid, date: '11 Nov 2019' }, 'mutate')//"GLOBAL.userId"
         }
+    }
+
+    formatDate(date) {
+        var monthNames = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec']
+        var day = date.getDate();
+        var monthIndex = date.getMonth()
+        var year = date.getFullYear()
+        return day + ' ' + monthNames[monthIndex] + ' ' + year
     }
 
 }

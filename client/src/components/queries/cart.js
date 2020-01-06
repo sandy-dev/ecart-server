@@ -19,6 +19,7 @@ const FETCH_CART = gql`
 const ADD_CART = gql`
   mutation addCart( $userId: String!, $bookId: String!, $date: String!) {
     addCart(userId: $userId,bookId: $bookId,date: $date) {
+      _id
       userId
       bookId
       date
@@ -27,8 +28,8 @@ const ADD_CART = gql`
 `
 
 const REMOVE_CART = gql`
-  mutation removeCart( $id: String!) {
-    removeCart(id: $id) {
+  mutation removeCart( $id: String!,$userId: String!) {
+    removeCart(id: $id,userId: $userId) {
       count
     }
   }

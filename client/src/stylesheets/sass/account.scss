@@ -4,10 +4,11 @@ $headerHeight: 8vh;
 $leftMargin: 15vw; //due to side bar
 
 .container-account {
-    @include flexCenter (flex, column, center, center, auto, 85vw);
+    @include flexCenter (flex, column, center, flex-start, auto, 85vw);
     position: relative;
     top: $headerHeight;
     left: $leftMargin;
+    min-height: 100vh;
 
     >div:nth-child(1),
     >div:nth-child(3) {
@@ -24,7 +25,7 @@ $leftMargin: 15vw; //due to side bar
     >div:nth-child(2),
     >div:nth-child(4) {
         @include flexCenter (flex, column, center, center, auto, 100%);
-        padding: 10%;
+        padding: 8%;
 
         >div {
             @include flexCenter (flex, column, center, center, auto, 100%);

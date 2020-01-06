@@ -185,7 +185,7 @@ class bookDetail extends Component {
                 review: this.state.review,
                 bookId: bookId,
                 date: date,
-                userId: '5dec970b1806381dbeb73f4d'//GLOBAL.userId
+                userId: GLOBAL.userId
             },
         })
 

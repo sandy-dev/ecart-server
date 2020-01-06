@@ -1,79 +1,35 @@
 import React, { Component, useState, useEffect } from 'react'
-import gql from 'graphql-tag'
-import { Query } from 'react-apollo'
-import { useLazyQuery, useMutation } from '@apollo/react-hooks'
+import { withApollo, Query } from 'react-apollo'
 import GLOBAL from '_src/components/common/global'
-
-const GET_USER = gql`
-  query user($uid: String!) {
-    user(uid: $uid) {
-      id
-      uid
-      name
-      email
-      image
-    }
-  }
-`
-
-const ADD_USER = gql`
-    mutation addUser($uid: String! $name: String!, $email: String!, $image: String!) {
-        addUser(uid:$uid, name: $name, email:$email,  image:$image) {
-            id
-            uid
-            name
-            email
-            image
-      }
-    }
-  `
-
+import { GET_USER, ADD_USER } from '_src/components/queries/users'
 
 const UserSync = (props) => {
 
-  const [_user, setUser] = useState(null)
-  const [getUser, { loading, data }] = useLazyQuery(GET_USER)
-
-  if (props.user && props.user.uid)
-    GLOBAL.userId = props.user.uid
-  else
-    GLOBAL.userId = ''
-
-  useEffect(() => {
-    //getUser({ variables: { uid: '5dec8856afcd9e1c6b71b476' } }) 
-  }, [])
-
-  if (loading) { }
-
-  if (data) {
-
-
-    if (data.user == null) {
-      return <UserAdd />
-    }
-    else {
-      GLOBAL.userId = data.user.id
-      GLOBAL.name = data.user.name
-      GLOBAL.email = data.user.email
-    }
+  if (props.user && props.user.uid) {
+    GLOBAL.userId = props.user.uid  //5dec970b1806381dbeb73f4d
+    GLOBAL.name = props.user.name
+    GLOBAL.email = props.user.email
+    getUser(props)
   }
 
   return null
 }
 
-const UserAdd = () => {
+async function getUser(props) {
 
-  const [addUser, { loading, data }] = useMutation(ADD_USER)
+  const { client } = props
+  const res = await client.query({ query: GET_USER, variables: { uid: GLOBAL.userId } })
+  if (res.data) {
 
-  if (loading) { }
-  if (data) { }
+    if (res.data.user == null) {
+      const res = await client.mutate({
+        mutation: ADD_USER,
+        variables: { uid: GLOBAL.userId, name: GLOBAL.name, email: GLOBAL.email, image: '' }
+      })
+    }
 
-  useEffect(() => {
-    //addUser({ variables: { uid: '5dec8856afcd9e1c6b71b476', name: 'subhash', email: 'subhash@email.com', image: '' } })
-  }, [])
-
-  return null
+  }
 }
 
-export default UserSync
+export default withApollo(UserSync)
 

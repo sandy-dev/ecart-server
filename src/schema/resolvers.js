@@ -222,7 +222,7 @@ export const resolvers = {
                 }
             })
 
-            //return cart
+            return cart
         },
 
         removeCart: async (root, args) => {
@@ -239,6 +239,28 @@ export const resolvers = {
             //     })
 
             const deletedItem = await CartModel.findByIdAndDelete(args.id)
+
+            let cart_count = await CartModel.aggregate(
+                [
+                    { $match: { userId: args.userId.toString() } },
+                    {
+                        $group: {
+                            _id: "$userId",
+                            count: { $sum: 1 },
+                        }
+                    }
+                ])
+
+            let _count = 0
+            cart_count.length > 0 ? _count = cart_count[0].count : null
+
+            pubsub.publish(CARTADDED, {
+                cartAdded: {
+                    count: _count
+                }
+            })
+
+
             return { count: deletedItem.id }
         },
 
@@ -268,6 +290,11 @@ export const resolvers = {
 
         async addAuthor(root, args) {
             const author = await AuthorModel.create(args)
+            return author
+        },
+
+        async removeAuthor(root, args) {
+            const author = await AuthorModel.findByIdAndDelete(args.id)
             return author
         },
     },

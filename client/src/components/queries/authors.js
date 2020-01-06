@@ -22,6 +22,14 @@ const ADD_AUTHOR = gql`
   }
 `
 
+const REMOVE_AUTHOR = gql`
+  mutation removeAuthor( $id: String!) {
+    removeAuthor(id:$id){
+      name
+    }
+  }
+`
+
 export {
-  FETCH_AUTHORS, ADD_AUTHOR
+  FETCH_AUTHORS, ADD_AUTHOR, REMOVE_AUTHOR
 }

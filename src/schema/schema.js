@@ -122,7 +122,7 @@ export default `
     ): Book
 
     addCart(userId: String!,bookId: String!,date: String!): Cart
-    removeCart(id: String!): Result
+    removeCart(id: String!,userId: String!): Result
     
     
     addRating(rating: Int!,review: String!,bookId: String!,userId: String!,date: String!): Rating
@@ -130,6 +130,7 @@ export default `
     addUser(uid: String!,name: String!,email: String!,image: String!): User
     
     addAuthor(name: String!,age: Int!): Author
+    removeAuthor(id: String!): Author
 
   }
 

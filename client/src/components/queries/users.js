@@ -1,27 +1,28 @@
 import React from 'react'
 import gql from 'graphql-tag'
 
-const FETCH_AUTHORS = gql`
-  query authorsQuery 
-    {
-        authors{
-            id
-          name
-          age
-        }
-    }`
-
-
-const ADD_AUTHOR = gql`
-  mutation addAuthor( $name: String!, $age: Int!) {
-    addAuthor(name: $name,age:$age) {
-      id
+const GET_USER = gql`
+  query user($uid: String!) {
+    user(uid: $uid) {
+      uid
       name
-      age
+      email
+      image
     }
   }
 `
 
+const ADD_USER = gql`
+    mutation addUser($uid: String! $name: String!, $email: String!, $image: String!) {
+        addUser(uid:$uid, name: $name, email:$email,  image:$image) {
+            uid
+            name
+            email
+            image
+      }
+    }
+  `
+
 export {
-  FETCH_AUTHORS, ADD_AUTHOR
+  GET_USER, ADD_USER
 }

@@ -54,6 +54,10 @@ $fontSizeText: .8rem;
                 @include color ("orange300", none);
                 @include spacePadding(all, none, none, none, none, 3%);
 
+                a {
+                    text-decoration: none;
+                }
+
             }
         }
 
@@ -572,6 +576,7 @@ input[type=submit]:hover {
         @include heightWidth(12px, 12px);
         fill: map-get($text-colors, "gray500");
         padding-top: 2px;
+        cursor: pointer;
     }
 
     >span:nth-child(1) {

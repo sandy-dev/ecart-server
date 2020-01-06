@@ -30,8 +30,14 @@ export class account extends Component {
 
                 <div>
 
-                    <span> Name: {GLOBAL.name} </span>
-                    <span> Email : {GLOBAL.email}</span>
+                    <div style={{ flexDirection: 'row', width: '50vw', justifyContent: 'flex-start', marginBottom: '2vh' }}>
+                        <span style={{ width: '5vw', textAlign: 'center', fontWeight: 'bold' }}> Name: </span>
+                        <span> {GLOBAL.name} </span>
+                    </div>
+                    <div style={{ flexDirection: 'row', width: '50vw', justifyContent: 'flex-start' }}>
+                        <span style={{ width: '5vw', textAlign: 'center', fontWeight: 'bold' }}> Email: </span>
+                        <span> {GLOBAL.email} </span>
+                    </div>
 
                 </div>
 
@@ -43,7 +49,16 @@ export class account extends Component {
 
                 <div>
 
-                    <List listData={this.state.cartData} onClick={(item) => { this.removeCart(item) }} source={'cart'} />
+                    {
+                        this.state.cartData.length > 0 &&
+                        <List listData={this.state.cartData} onClick={(item) => { this.removeCart(item) }} source={'cart'} />
+                    }
+
+                    {
+                        this.state.cartData.length == 0 &&
+                        <span> No items</span>
+                    }
+
 
                 </div>
 
@@ -54,8 +69,11 @@ export class account extends Component {
 
     componentDidMount = async () => {
 
+        console.log(GLOBAL.userId)
+
         const { client } = this.props
-        const res = await client.query({ query: FETCH_CART, variables: { userId: '5dec970b1806381dbeb73f4d' } })//GLOBAL.userId 
+        const res = await client.query({ query: FETCH_CART, variables: { userId: GLOBAL.userId } })
+
         if (res.data) {
             this.setState({ cartData: res.data.carts })
         }
@@ -66,8 +84,8 @@ export class account extends Component {
         const { client } = this.props
         const res = await client.mutate({
             mutation: REMOVE_CART,
-            variables: { id: item },
-            refetchQueries: [{ query: FETCH_CART, variables: { userId: '5dec970b1806381dbeb73f4d' } }]
+            variables: { id: item, userId: GLOBAL.userId },
+            refetchQueries: [{ query: FETCH_CART, variables: { userId: GLOBAL.userId } }]
         })
 
         if (res.data.removeCart != null && res.data.removeCart.count != null) {

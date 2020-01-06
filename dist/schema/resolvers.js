@@ -621,9 +621,9 @@ var resolvers = exports.resolvers = {
                                     }
                                 });
 
-                                //return cart
+                                return _context18.abrupt('return', cart);
 
-                            case 9:
+                            case 10:
                             case 'end':
                                 return _context18.stop();
                         }
@@ -635,7 +635,8 @@ var resolvers = exports.resolvers = {
 
         removeCart: function () {
             var _ref13 = (0, _asyncToGenerator3.default)( /*#__PURE__*/_regenerator2.default.mark(function _callee19(root, args) {
-                var deletedItem;
+                var deletedItem, cart_count, _count;
+
                 return _regenerator2.default.wrap(function _callee19$(_context19) {
                     while (1) {
                         switch (_context19.prev = _context19.next) {
@@ -645,9 +646,29 @@ var resolvers = exports.resolvers = {
 
                             case 2:
                                 deletedItem = _context19.sent;
+                                _context19.next = 5;
+                                return _cart.CartModel.aggregate([{ $match: { userId: args.userId.toString() } }, {
+                                    $group: {
+                                        _id: "$userId",
+                                        count: { $sum: 1 }
+                                    }
+                                }]);
+
+                            case 5:
+                                cart_count = _context19.sent;
+                                _count = 0;
+
+                                cart_count.length > 0 ? _count = cart_count[0].count : null;
+
+                                pubsub.publish(CARTADDED, {
+                                    cartAdded: {
+                                        count: _count
+                                    }
+                                });
+
                                 return _context19.abrupt('return', { count: deletedItem.id });
 
-                            case 4:
+                            case 10:
                             case 'end':
                                 return _context19.stop();
                         }
@@ -753,6 +774,30 @@ var resolvers = exports.resolvers = {
                         }
                     }
                 }, _callee22, _this9);
+            }))();
+        },
+        removeAuthor: function removeAuthor(root, args) {
+            var _this10 = this;
+
+            return (0, _asyncToGenerator3.default)( /*#__PURE__*/_regenerator2.default.mark(function _callee23() {
+                var author;
+                return _regenerator2.default.wrap(function _callee23$(_context23) {
+                    while (1) {
+                        switch (_context23.prev = _context23.next) {
+                            case 0:
+                                _context23.next = 2;
+                                return _author.AuthorModel.findByIdAndDelete(args.id);
+
+                            case 2:
+                                author = _context23.sent;
+                                return _context23.abrupt('return', author);
+
+                            case 4:
+                            case 'end':
+                                return _context23.stop();
+                        }
+                    }
+                }, _callee23, _this10);
             }))();
         }
     },

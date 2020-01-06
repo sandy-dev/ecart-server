@@ -9,14 +9,15 @@
   -webkit-box-align: center;
       -ms-flex-align: center;
           align-items: center;
-  -webkit-box-pack: center;
-      -ms-flex-pack: center;
-          justify-content: center;
+  -webkit-box-pack: start;
+      -ms-flex-pack: start;
+          justify-content: flex-start;
   height: auto;
   width: 85vw;
   position: relative;
   top: 8vh;
   left: 15vw;
+  min-height: 100vh;
 }
 
 .container-account > div:nth-child(1),
@@ -57,7 +58,7 @@
           justify-content: center;
   height: auto;
   width: 100%;
-  padding: 10%;
+  padding: 8%;
 }
 
 .container-account > div:nth-child(2) > div,
