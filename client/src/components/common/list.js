@@ -63,7 +63,7 @@ const ListBook = (props) => {
                         <span><span>Title: </span>  {item.name}</span>
                         <span><span>Author:</span>    {item.author.name}</span>
                         <span><span>Price: </span>   {item.price}</span>
-                        <span> <span>Category  :</span> {Categories[item.category - 1].name}</span>
+                        <span> <span>Category  :</span> {Categories[item.category].name}</span>
                         <span> <span>Publish Date  :</span> {item.publishYear}</span>
                         <span> <span>Pages  :</span> {item.pages}</span>
 
