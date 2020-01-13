@@ -413,6 +413,10 @@ input[type=submit]:hover {
     @include heightWidth (auto, 100%);
     @include alignItems (center, center);
     margin-top: 2%;
+
+    >a{
+        cursor: pointer;
+    }
 }
 
 .inputError {

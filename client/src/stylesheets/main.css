@@ -622,6 +622,10 @@ input[type=submit]:hover {
   margin-top: 2%;
 }
 
+.div-pagination > a {
+  cursor: pointer;
+}
+
 .inputError {
   border: 1px solid red;
 }

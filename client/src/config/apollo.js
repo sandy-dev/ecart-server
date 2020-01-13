@@ -7,15 +7,13 @@ import { getMainDefinition } from 'apollo-utilities';
 
 
 const httpLink = new HttpLink({
-    uri: '/graphql'  
+    uri: 'http://localhost:5000/graphql'
     //https://confikr-cart-graphql.herokuapp.com
     //http://localhost:5000
 })
 
 const wsLink = new WebSocketLink({
-    uri: `wss://confikr-cart-graphql.herokuapp.com/subscriptions`,
-    //`wss://confikr-cart-graphql.herokuapp.com/subscriptions`
-    //`ws://localhost:5000/subscriptions`
+    uri: `ws://18.219.120.160:5000/subscriptions`,
     options: {
         reconnect: true
     }

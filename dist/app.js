@@ -88,12 +88,15 @@ app.use('/graphql', _bodyParser2.default.json(), (0, _expressGraphql2.default)({
 
 app.use(_express2.default.static('client/public'));
 app.get('*', function (req, res) {
-    res.sendFile(_path2.default.resolve(__dirname, 'client', 'public', 'index.html'));
+    res.sendFile(_path2.default.resolve(process.cwd(), 'client', 'public', 'index.html'));
 });
 
 var server = (0, _http.createServer)(app);
 
 server.listen(PORT, function () {
+
+    console.log('listening on 5000');
+
     new _subscriptionsTransportWs.SubscriptionServer({
         execute: _graphql.execute,
         subscribe: _graphql.subscribe,

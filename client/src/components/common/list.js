@@ -74,8 +74,18 @@ const ListBook = (props) => {
 
                         <span style={{ flexDirection: "row" }}>
 
-                            <IconStar style={{ height: '20px', marginRight: '4px' }} className='starselected' /> <span> {rating.average} </span>
-                            <span> ({rating.count})</span>
+                            <IconStar style={{ height: '20px', marginRight: '4px' }} className='starselected' />
+
+                            {
+                                item.ratingCount > 0 &&
+                                <span> {item.averageRating} / {item.ratingCount} </span>
+                            }
+
+                            {
+                                item.ratingCount == null &&
+                                <span> No ratings </span>
+                            }
+
 
                         </span>
 

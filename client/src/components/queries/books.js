@@ -13,6 +13,9 @@ const FETCH_BOOKS = gql`
             image
             publishYear
             category
+            averageRating
+            ratingCount
+            
               author{
                 id
                 name

@@ -58,12 +58,15 @@ app.use('/graphql', bodyParser.json(), graphqlHTTP({
 
 app.use(express.static('client/public'))
 app.get('*', (req, res) => {
-    res.sendFile(path.resolve(__dirname, 'client', 'public', 'index.html'))
+    res.sendFile(path.resolve(process.cwd(), 'client', 'public', 'index.html'))
 })
 
 const server = createServer(app)
 
 server.listen(PORT, () => {
+
+    console.log('listening on 5000')
+
     new SubscriptionServer({
         execute,
         subscribe,

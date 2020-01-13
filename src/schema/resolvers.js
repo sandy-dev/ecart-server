@@ -266,7 +266,6 @@ export const resolvers = {
 
 
         async addRating(root, args) {
-            const rating = await RatingModel.create(args)
 
             //update book collection with rating data
             let book = await BookModel.findById(args.bookId)
@@ -276,8 +275,14 @@ export const resolvers = {
             if (ratings && ratings.length > 0) {
                 ratings.map(a => { total = total + a.rating, count++ })
             }
+
+            count++
+
             book.averageRating = ((total + args.rating) / count).toFixed(1)
             book.ratingCount = count
+
+            const rating = await RatingModel.create(args)
+
             await book.save()
             return rating
 

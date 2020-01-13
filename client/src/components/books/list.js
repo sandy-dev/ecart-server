@@ -12,7 +12,7 @@ import GLOBAL from '_src/components/common/global'
 const Categories = Category[0]['category']
 const textMulti = .16
 const textMultiCategory = .08
-const item_per_page = 5
+const item_per_page = 4
 const dvCategoryHeight = 240
 let activeCategory = 0
 let activeSorting = 'rating'
@@ -154,7 +154,7 @@ class bookList extends Component {
                         <div className='container-list'>
 
                             <List listData={books} className='container-list' source={'book'} onClick={(itemid) => { this.cartClicked(itemid) }} />
-                            <Paging itemCount={this.state.itemCount} sortText={this.state.sortText} onClick={(index) => { this.GetPaginatedData(index) }} />
+                            <Paging itemCount={this.state.itemCount} filters={{ sort: this.state.sortText, category: this.state.category, author: this.state.author }} onClick={(index) => { this.GetPaginatedData(index) }} />
 
                         </div>
                     }
@@ -273,7 +273,7 @@ class bookList extends Component {
 
         const { client } = this.props
 
-        const res = await this.runQuery(FETCH_BOOKS, FETCH_BOOKS, { category: 0, sort: this.state.sortText, search: this.state.inputText, limit: item_per_page, offset: 0 }, 'query')
+        const res = await this.runQuery(FETCH_BOOKS, FETCH_BOOKS, { category: 0, author: this.state.author, sort: this.state.sortText, search: this.state.inputText, limit: item_per_page, offset: 0 }, 'query')
         if (res.data) {
 
             const count = res.data.books.count
@@ -281,7 +281,6 @@ class bookList extends Component {
             this.setState({ filteredData: dataSet, itemCount: count, category: 0, categoryText: Categories[0].name })
         }
     }
-
 
     validateAndSearch(event, type) {
 

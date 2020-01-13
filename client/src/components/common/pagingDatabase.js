@@ -2,9 +2,8 @@ import React, { Component } from 'react'
 import ArrowLeft from '@material-ui/icons/ArrowLeft'
 import ArrowRight from '@material-ui/icons/ArrowRight'
 
-const itemsPerPage = 5
-let currentIndex = 0
-let sortText = ''
+const itemsPerPage = 4
+let filter = []
 
 export class paging extends Component {
 
@@ -12,6 +11,7 @@ export class paging extends Component {
         super(props)
 
         this.state = {
+            currentIndex: 0
         }
     }
 
@@ -24,9 +24,9 @@ export class paging extends Component {
 
             <div className='div-pagination'>
                 {
-                    currentIndex > 0 &&
+                    this.state.currentIndex > 0 &&
 
-                    <a className='' onClick={(e) => this.paginationClick(e, currentIndex - 1)}>
+                    <a className='' onClick={(e) => this.paginationClick(e, this.state.currentIndex - 1)}>
                         <ArrowLeft style={{ fontSize: 40, marginTop: '2%' }} />
                     </a>
                 }
@@ -34,16 +34,16 @@ export class paging extends Component {
                 {
                     pagingArray.map((user, index) => {
                         return (
-                            <a key={index} className='anchorPaging' style={{ opacity: index == currentIndex ? .5 : 1 }} onClick={
+                            <a key={index} className='anchorPaging' style={{ opacity: index == this.state.currentIndex ? .5 : 1 }} onClick={
                                 (e) => { this.paginationClick(e, index) }}>{index + 1}</a>
                         )
                     })
                 }
 
                 {
-                    currentIndex < (pageCount - 1) &&
+                    this.state.currentIndex < (pageCount - 1) &&
 
-                    <a className='' onClick={(e) => this.paginationClick(e, currentIndex + 1, false)}>
+                    <a className='' onClick={(e) => this.paginationClick(e, this.state.currentIndex + 1, false)}>
                         <ArrowRight style={{ fontSize: 40, marginTop: '2%' }} />
                     </a>
                 }
@@ -55,21 +55,19 @@ export class paging extends Component {
 
     paginationClick(event, index) {
 
-        currentIndex = index
+        this.setState({ currentIndex: index })
         this.props.onClick(index)
     }
 
     componentDidUpdate() {
-        currentIndex = 0
-        sortText = this.props.sortText
-    }
 
-    componentWillUpdate() {
+        let isEqual = JSON.stringify(this.props.filters) === JSON.stringify(filter)
 
-        //if (this.props.sortText != sortText) {
-            // currentIndex = 0
-            // sortText = this.props.sortText
-        //}
+        if (!isEqual) {
+            filter = this.props.filters
+            this.setState({ currentIndex: 0 })
+
+        }
     }
 }
 
