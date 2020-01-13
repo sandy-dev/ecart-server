@@ -1,6 +1,6 @@
 import React, { Component } from 'react'
-import { withApollo } from 'react-apollo'
-import { FETCH_BOOKS } from '_src/components/queries/books'
+import { withApollo, Subscription } from 'react-apollo'
+import { FETCH_BOOKS, RATING_ADDED_SUB } from '_src/components/queries/books'
 import { ADD_CART, FETCH_CART } from '_src/components/queries/cart'
 import List from '_src/components/common/list'
 import Paging from '_src/components/common/pagingDatabase'
@@ -143,6 +143,13 @@ class bookList extends Component {
                 </div>
 
                 <div>
+
+                    <Subscription subscription={RATING_ADDED_SUB}>
+                        {({ data }) => {
+                            console.log(data)
+                            return null
+                        }}
+                    </Subscription>
 
                     {
                         this.state.isLoading && <div>Loading..</div>

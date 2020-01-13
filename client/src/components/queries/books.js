@@ -111,6 +111,14 @@ const UPDATE_BOOK = gql`
     }
   `
 
+const RATING_ADDED_SUB = gql`
+  subscription {
+    ratingAdded{
+        count
+    }
+  }
+`
+
 export {
-  FETCH_BOOKS, ADD_BOOK, FETCH_BOOK_ID, UPDATE_BOOK
+  FETCH_BOOKS, ADD_BOOK, FETCH_BOOK_ID, UPDATE_BOOK,RATING_ADDED_SUB
 }

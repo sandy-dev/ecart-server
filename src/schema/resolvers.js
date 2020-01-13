@@ -6,6 +6,7 @@ import { RatingModel } from '../models/rating'
 import { UserModel } from '../models/user'
 
 const CARTADDED = 'CARTADDED'
+const RATINGADDED = 'RATINGADDED'
 const pubsub = new PubSub()
 
 export const resolvers = {
@@ -284,6 +285,13 @@ export const resolvers = {
             const rating = await RatingModel.create(args)
 
             await book.save()
+
+            pubsub.publish(RATINGADDED, {
+                ratingAdded: {
+                    count: count
+                }
+            })
+
             return rating
 
         },
@@ -307,6 +315,9 @@ export const resolvers = {
     Subscription: {
         cartAdded: {
             subscribe: () => pubsub.asyncIterator(CARTADDED)
+        },
+        ratingAdded: {
+            subscribe: () => pubsub.asyncIterator(RATINGADDED)
         }
     },
 }

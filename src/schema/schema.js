@@ -140,6 +140,7 @@ export default `
 
   type Subscription {
     cartAdded: Result
+    ratingAdded: Result
   }
 
   schema {
