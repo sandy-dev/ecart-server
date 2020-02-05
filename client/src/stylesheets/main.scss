@@ -15,8 +15,7 @@ $fontSizeText: .8rem;
     padding: 0;
     margin: 0;
     @include flex (flex, column);
-    @include heightWidth (auto, auto);
-    @include flex (flex, column);
+    @include heightWidth (auto, 100vw);
 }
 
 .header {
@@ -27,7 +26,22 @@ $fontSizeText: .8rem;
     z-index: 100;
 
     >div:nth-child(1) {
-        flex-basis: 10%;
+        @include flexCenter (flex, row, center, center, auto, 10%);
+
+        @media only screen and (min-width: 600px) {
+            >svg {
+                width: 0 !important;
+                height: 0;
+            }
+        }
+
+        @media only screen and (max-width: 600px) {
+            >svg {
+                padding-left: 30px;
+                cursor: pointer;
+            }
+        }
+
     }
 
     >div:nth-child(2) {
@@ -138,7 +152,16 @@ $fontSizeText: .8rem;
 
 .sidebar {
     @include flex (flex, column);
-    @include heightWidth (100vh, 15vw);
+
+    @media only screen and (min-width: 600px) {
+        @include heightWidth (100vh, 15vw);
+    }
+
+    @media only screen and (max-width: 600px) {
+        @include heightWidth (100vh, 30vw);
+    }
+
+
     @include color ("white", none);
     @include position (8vh, none, none, none, fixed);
     z-index: 99;
@@ -237,7 +260,13 @@ $fontSizeText: .8rem;
     @include color ("lkdn-4", none);
     padding-bottom: 2%;
     @include flexCenter (flex, column, center, flex-end, 20vh, auto);
-    margin-left: $leftMargin;
+
+
+    @media only screen and (min-width: 600px) {
+        margin-left: $leftMargin;
+    }
+
+    @media only screen and (max-width: 600px) {}
 }
 
 
@@ -321,8 +350,8 @@ input[type=submit]:hover {
 }
 
 .dot {
-    height: 7vmin;
-    width: 7vmin;
+    height: 8vmin;
+    width: 8vmin;
     border-radius: 50%;
     display: inline-block;
     @include color ("orange300", none);
@@ -337,7 +366,16 @@ input[type=submit]:hover {
 .scrolltop {
     position: fixed;
     bottom: 20px;
-    right: 18px;
+
+
+    @media only screen and (min-width: 600px) {
+        right: 18px;
+    }
+
+    @media only screen and (max-width: 600px) {
+        right: 40px;
+    }
+
     //display: none;
     z-index: 1;
     display: none;
@@ -414,7 +452,7 @@ input[type=submit]:hover {
     @include alignItems (center, center);
     margin-top: 2%;
 
-    >a{
+    >a {
         cursor: pointer;
     }
 }
@@ -425,15 +463,48 @@ input[type=submit]:hover {
 
 .item-list {
 
-    @include flexCenter (flex, row, center, space-evenly, auto, auto);
-    @include border (none, none, bottom, none, 'gray200', 1px, solid, none, none);
-    min-width: 80vw;
-    @include spaceMargin(none, none, none, bottom, none, 20px);
-    @include spacePadding(none, none, none, bottom, none, 20px);
+    @media only screen and (min-width: 600px) {
 
-    >img {
-        @include flexCenter (flex, row, center, center, 30vh, 15vw);
+        @include flexCenter (flex, row, center, space-evenly, auto, auto);
+        @include border (none, none, bottom, none, 'gray200', 1px, solid, none, none);
+        min-width: 80vw;
+        @include spaceMargin(none, none, none, bottom, none, 20px);
+        @include spacePadding(none, none, none, bottom, none, 20px);
+
+        >img {
+            @include flexCenter (flex, row, center, center, 30vh, 15vw);
+        }
     }
+
+    @media only screen and (max-width: 600px) {
+
+        @include flexCenter (flex, row, center, space-evenly, auto, auto);
+        @include border (none, none, bottom, none, 'gray200', 1px, solid, none, none);
+        min-width: 100vw;
+        @include spaceMargin(none, none, none, bottom, none, 20px);
+        @include spacePadding(none, none, none, bottom, none, 20px);
+
+        >img {
+            @include flexCenter (flex, row, center, center, 18vh, 25vw);
+        }
+
+        >div:nth-child(1) {
+            width: 40%;
+        }
+
+        >div:nth-child(2) {
+            width: 40%;
+        }
+
+        >div:nth-child(3) {
+            width: 20%;
+
+            >a {
+                width: 80%;
+            }
+        }
+    }
+
 
 }
 
@@ -459,7 +530,15 @@ input[type=submit]:hover {
 }
 
 .list-infobar {
-    @include flexCenter (flex, column, flex-start, space-around, 30vh, 25%);
+    @media only screen and (min-width: 600px) {
+        @include flexCenter (flex, column, flex-start, space-around, 30vh, 25%);
+    }
+
+    @media only screen and (max-width: 600px) {
+        @include flexCenter (flex, column, flex-start, space-around, 20vh, 25%);
+    }
+
+
     @include border (none, none, none, left, 'gray200', 1px, solid, none, none);
     @include spacePadding(none, none, none, none, left, 3%);
 

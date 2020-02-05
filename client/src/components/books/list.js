@@ -144,12 +144,11 @@ class bookList extends Component {
 
                 <div>
 
-                    <Subscription subscription={RATING_ADDED_SUB}>
+                    {/* <Subscription subscription={RATING_ADDED_SUB}>
                         {({ data }) => {
-                            console.log(data)
                             return null
                         }}
-                    </Subscription>
+                    </Subscription> */}
 
                     {
                         this.state.isLoading && <div>Loading..</div>

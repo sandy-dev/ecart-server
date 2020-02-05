@@ -37,7 +37,7 @@ export class sidebar extends Component {
 
         return (
 
-            <div className="sidebar">
+            <div className="sidebar" id='dvSidebar'>
 
                 <div className="sidebar-header">
                 </div>

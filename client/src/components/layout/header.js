@@ -5,6 +5,7 @@ import { Logo_1 } from '_src/components/common/impImage'
 import { firebase, StyledFirebaseAuth } from '_src/components/auth/firebase'
 import { Link } from 'react-router-dom'
 import AddShoppingCartRounded from '@material-ui/icons/AddShoppingCartRounded'
+import Menu from '@material-ui/icons/Menu'
 import { FETCH_CART } from '_src/components/queries/cart'
 import GLOBAL from '_src/components/common/global'
 
@@ -47,8 +48,13 @@ class header extends Component {
             <div className="header" id='dvheader'>
 
                 <div>
+
+                    <Menu width={100} onClick={() => this.manageSidebar()} />
+
+                    &nbsp;
+
                     <Link to={"/"}>
-                        <img src={Logo_1} style={{ height: '6vmin', width: '7vmin', margin: '1vmin 0 1vmin 2vmin' }} />
+                        <img src={Logo_1} style={{ height: '5vmin', width: '6vmin', margin: '1vmin 0 1vmin 2vmin' }} />
                     </Link>
                 </div>
 
@@ -171,6 +177,15 @@ class header extends Component {
             dvScroll.style.display = "flex"
         }
 
+    }
+
+    manageSidebar = () => {
+
+        let dvSidebar = document.getElementById('dvSidebar')
+        if (dvSidebar.style.display == "none")
+            dvSidebar.style.display = "block"
+        else
+            dvSidebar.style.display = "none"
     }
 }
 

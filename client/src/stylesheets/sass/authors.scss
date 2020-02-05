@@ -4,11 +4,19 @@ $contentMinHeight: 80vh;
 $listMinHeight: 70vh;
 
 .container-authors-main {
-    @include flexCenter (flex, column, center, center, auto, 85vw);
+
+    @media only screen and (min-width: 600px) {
+        @include flexCenter (flex, column, center, center, auto, 85vw);
+        left: $leftMargin;
+    }
+
+    @media only screen and (max-width: 600px) {
+        @include flexCenter (flex, column, center, center, auto, 100vw);
+    }
+
     @include color ("white", none);
     position: relative;
     top: $headerHeight;
-    left: $leftMargin;
 
     >div {
 
@@ -25,16 +33,26 @@ $listMinHeight: 70vh;
             @include flexCenter (flex, column, center, flex-start, 100%, 100%);
 
             >div:nth-child(1) {
-                @include flexCenter (flex, row, center, flex-start, 20%, 100%);
+
+
+                //for mobile
+
+                @media only screen and (min-width: 600px) {
+                    @include flexCenter (flex, row, center, flex-start, 20%, 100%);
+                    min-height: 10vh;
+                }
+
+                @media only screen and (max-width: 600px) {
+                    @include flexCenter (flex, column, center, center, 100%, 100%);
+                    min-height: 15vh;
+                }
+
+
                 @include color ("gray100", none);
-                // @include border (none, none, bottom, none, 'gray200', 1px, solid, none, none);
                 @include spacePadding(none, none, none, none, left, 10%);
-                //for search adjust only
-                min-height: 10vh;
 
                 >div:nth-child(1) {
                     @include spaceMargin(none, none, right, none, none, 5%);
-
                 }
 
                 >div {
@@ -49,25 +67,55 @@ $listMinHeight: 70vh;
                 }
 
 
-                input,
-                input[type="text"] {
-                    width: 24vw;
-                    height: 5vh;
-                    @include color ("lkdn-1", none);
-                    border-radius: 3%;
-                    @include border (top, none, bottom, left, 'gray400', 1px, solid, none, none);
-                    border-right: none !important;
+                @media only screen and (min-width: 600px) {
+
+                    input,
+                    input[type="text"] {
+                        width: 24vw;
+                        height: 5vh;
+                        @include color ("lkdn-1", none);
+                        border-radius: 3%;
+                        @include border (top, none, bottom, left, 'gray400', 1px, solid, none, none);
+                        border-right: none !important;
+                    }
+
+                    input:focus {
+                        outline: none;
+                    }
+
+                    a {
+                        @include color ("orange200", none);
+                        @include flexCenter (flex, column, center, center, 5vh, 5vw);
+                        cursor: pointer;
+                    }
+
                 }
 
-                input:focus {
-                    outline: none;
+                @media only screen and (max-width: 600px) {
+
+                    input,
+                    input[type="text"] {
+                        width: 70vw;
+                        height: 5vh;
+                        @include color ("lkdn-1", none);
+                        border-radius: 3%;
+                        @include border (top, none, bottom, left, 'gray400', 1px, solid, none, none);
+                        border-right: none !important;
+                        margin-top: 20px;
+                    }
+
+                    input:focus {
+                        outline: none;
+                    }
+
+                    a {
+                        @include color ("orange200", none);
+                        @include flexCenter (flex, column, center, center, 5vh, 10vw);
+                        cursor: pointer;
+                        margin-top: 20px;
+                    }
                 }
 
-                a {
-                    @include color ("orange200", none);
-                    @include flexCenter (flex, column, center, center, 5vh, 5vw);
-                    cursor: pointer;
-                }
             }
 
             >div:nth-child(2) {
