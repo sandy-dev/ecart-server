@@ -4,7 +4,6 @@ import { BookModel } from '../models/book'
 import { AuthorModel } from '../models/author'
 import { RatingModel } from '../models/rating'
 import { UserModel } from '../models/user'
-
 const CARTADDED = 'CARTADDED'
 const RATINGADDED = 'RATINGADDED'
 const pubsub = new PubSub()
@@ -69,7 +68,10 @@ export const resolvers = {
 
         },
 
-        author: async (root, args) => {
+        author: async (root, args, context) => {
+
+            auth(context.request, context.response)
+
             let author = await AuthorModel.findById(args.id)
             return author
         },
@@ -320,4 +322,20 @@ export const resolvers = {
             subscribe: () => pubsub.asyncIterator(RATINGADDED)
         }
     },
+}
+
+const auth = (req, res, next) => {
+
+    const token = req.header('x-auth-token')
+
+    if (!token)
+        return res.status(401).json({ msg: 'No token, authorizaton denied' })
+
+    try {
+        const decoded = jwt.verify(token, config.get('jwtSecret'))
+        req.user = decoded
+        next()
+    } catch (e) {
+        res.status(400).json({ msg: 'Token is not valid' })
+    }
 }
