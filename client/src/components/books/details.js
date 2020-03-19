@@ -1,19 +1,20 @@
 import React, { Component } from 'react'
 import { graphql, Query } from 'react-apollo'
+import { Grid, Card, CardMedia, CardContent, Typography, Button, Divider, Paper } from '@material-ui/core'
+import Person from '@material-ui/icons/PersonOutlineSharp'
 import { FETCH_BOOK_ID } from '_src/components/queries/books'
 import { FETCH_RATINGS, ADD_RATING } from '_src/components/queries/ratings'
 import Rating from '_src/components/common/rating'
 import List from '_src/components/common/list'
 import GLOBAL from '_src/components/common/global'
 import Category from '_src/config/category.json'
-import { Grid, Card, CardMedia, CardContent, Typography, Button, Divider, Paper } from '@material-ui/core'
-import Person from '@material-ui/icons/PersonOutlineSharp'
+import Popper from '_src/components/common/popper'
+
 const Categories = Category[0]['category']
 let bookId = 0
 const colorBody = '#9E9E9E'
 
 class bookDetail extends Component {
-
     constructor(props) {
         super(props)
         this.state = {
@@ -21,10 +22,9 @@ class bookDetail extends Component {
             starsSelected: 2,
             bookId: '',
             reviewHeight: '100%',
-            isLoginPopup: false
+            anchorEl: null,
         }
     }
-
     render() {
         let state = window.history.state
         if (state != null && state.book) { bookId = state.book }
@@ -45,10 +45,10 @@ class bookDetail extends Component {
                                         <Grid item sm={12} style={style.center}>
                                             <Card elevation={1} style={style.cardDetailHeader}>
                                                 <Grid container>
-                                                    <Grid item style={style.center}>
+                                                    <Grid item sm={4} style={style.center}>
                                                         <img src={`/uploads/${data.book.image}`} style={style.Media} />
                                                     </Grid>
-                                                    <Grid item style={style.center}>
+                                                    <Grid item sm={8} style={style.center}>
                                                         <CardContent>
                                                             <Grid item style={style.centerRowLeft}>
                                                                 <Typography variant="button" style={style.infoBoxHeader}>name</Typography>
@@ -116,7 +116,7 @@ class bookDetail extends Component {
                                         </Grid>
                                         <Divider style={style.divider} />
                                         <Grid item sm={12} style={style.center}>
-                                            <Grid container style={style.centerColumn} spacing={3}>
+                                            <Grid container direction='column' style={style.centerColumn} spacing={1}>
                                                 <Grid item sm={12} style={style.center}>
                                                     <Typography variant="button"> Add review</Typography>
                                                 </Grid>
@@ -129,20 +129,14 @@ class bookDetail extends Component {
                                                 <Grid item sm={12} style={style.centerRow}>
                                                     <textarea style={{ height: '70px' }} value={this.state.review} maxLength='1000' onChange={(event) => { this.setText(event) }} />
                                                 </Grid>
-                                                <Grid item sm={12} style={style.centerRow}>
-                                                    <Button variant="outlined" color="primary" id='btnSubmit' type="submit" style={{ width: '40vmin' }} onClick={() => { this.submitReview() }}>
+                                                <Grid item sm={12} style={style.centerRowBadge}>
+                                                    <Button disabled={this.state.reviewHeight == 0 ? true : false} variant="outlined" color="primary" id='btnSubmit' type="submit" style={{ width: '40vmin' }} onClick={(event) => { this.submitReview(event, 'right') }} >
                                                         Submit Review
                                                    </Button>
+                                                    <Popper
+                                                        text='Please Log in to continue'
+                                                        anchorEl={this.state.anchorEl} />
                                                 </Grid>
-                                                <Grid item sm={12} style={style.centerRow}>
-                                                    {
-                                                        this.state.isLoginPopup &&
-                                                        <Paper elevation={1} style={{ paddingLeft: 2 }}>
-                                                            <Typography variant="body1"> Please Log in to review</Typography>
-                                                        </Paper>
-                                                    }
-                                                </Grid>
-
                                             </Grid>
                                         </Grid>
                                     </Grid>
@@ -162,11 +156,9 @@ class bookDetail extends Component {
         else
             this.setState({ review: event.target.value })
     }
-
     setRating(rating) {
         this.setState({ starsSelected: rating })
     }
-
     formatDate(date) {
         var monthNames = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec']
         var day = date.getDate();
@@ -174,15 +166,13 @@ class bookDetail extends Component {
         var year = date.getFullYear()
         return day + ' ' + monthNames[monthIndex] + ' ' + year
     }
-
-    submitReview() {
+    submitReview(event, _place) {
         let isSignedIn = GLOBAL.userId == '' ? false : true
         if (!isSignedIn) {
-            this.setState({ isLoginPopup: true })
+            this.setState({ anchorEl: this.state.anchorEl ? null : event.currentTarget, })
             setTimeout(() => {
-                this.setState({ isLoginPopup: false })
-            }, 2000)
-
+                this.setState({ anchorEl: null })
+            }, 1500)
             return false
         }
         let date = this.formatDate(new Date(Date.now()))
@@ -208,6 +198,7 @@ const style = {
         display: 'flex',
         justifyContent: 'center',
         alignItems: 'center',
+        flexGrow: 1
     },
     centerRow: {
         display: 'flex',
@@ -243,7 +234,7 @@ const style = {
         margin: 'auto'
     },
     Media: {
-        height: 220,
+        height: 200,
         width: '100%',
     },
     infoBoxHeader: {
@@ -263,6 +254,19 @@ const style = {
     },
     divider: {
         width: '100%'
+    },
+    badge: {
+        position: 'relative',
+        top: 0,
+        left: 5,
+        width: 'auto'
+    },
+    centerRowBadge: {
+        display: 'flex',
+        flexDirection: 'row',
+        justifyContent: 'center',
+        alignItems: 'center',
+        position: 'relative'
     }
 }
 

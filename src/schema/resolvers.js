@@ -122,8 +122,14 @@ export const resolvers = {
             return cart
         },
         carts: async (root, args) => {
-            let carts = await CartModel.find({ userId: args.userId }).populate('book')
-            return carts
+            let lstCount = await CartModel.aggregate([{ $match: { userId: args.userId } }, { $count: "totalCount" }])
+            console.log(lstCount)
+            let _count = lstCount.length > 0 ? lstCount[0]['totalCount'] : 0
+            let _carts = await CartModel.find({ userId: args.userId }).populate('book').limit(args.limit == 0 ? _count : args.limit).skip(args.offset)
+            return {
+                count: _count,
+                Carts: _carts
+            }
 
             // let carts = await CartModel.aggregate([
             //     {
@@ -177,8 +183,6 @@ export const resolvers = {
         }
     },
 
-
-
     Mutation: {
 
         async addBook(root, args) {
@@ -200,7 +204,6 @@ export const resolvers = {
             await book.save()
             return book
         },
-
 
         async addCart(root, args) {
             const cart = await CartModel.create(args)
@@ -229,18 +232,6 @@ export const resolvers = {
         },
 
         removeCart: async (root, args) => {
-
-            // await CartModel.findById(args.id)
-            //     .then((doc) => {
-            //         doc.remove()
-            //             .then((doc) => {
-            //                 if (doc != null)
-            //                     return { count: 'success' }
-            //                 else
-            //                     return { count: 'success' }
-            //             })
-            //     })
-
             const deletedItem = await CartModel.findByIdAndDelete(args.id)
 
             let cart_count = await CartModel.aggregate(
@@ -255,7 +246,7 @@ export const resolvers = {
                 ])
 
             let _count = 0
-            cart_count.length > 0 ? _count = cart_count[0].count : null
+            _count = cart_count.length > 0 ? cart_count[0].count : 0
 
             pubsub.publish(CARTADDED, {
                 cartAdded: {
@@ -263,8 +254,10 @@ export const resolvers = {
                 }
             })
 
-
-            return { count: deletedItem.id }
+            return {
+                count: _count,
+                id: deletedItem.id
+            }
         },
 
 

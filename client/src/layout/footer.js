@@ -3,7 +3,7 @@ import { Paper, Typography } from '@material-ui/core'
 
 export const footer = (props) => {
     return (
-        <Paper sm={12} style={style.footer}>
+        <Paper sm={12} style={style.footer} square>
             <Typography variant="caption" noWrap={false}> Contacts: confik.lab@gmail.com </Typography>
             {/* <Typography variant="caption" noWrap={false}> © Copyright 2019 Confik Lab - All Rights Reserved</Typography> */}
         </Paper >

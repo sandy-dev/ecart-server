@@ -35,13 +35,13 @@ class header extends Component {
                             {({ data }) => {
                                 if (data) {
                                     return <div style={style.cart}>
-                                        <Link to={"/account"} style={{ textDecoration: 'none' }}>
+                                        <Link to={"/account"} style={style.textCartCount}>
                                             {data.cartAdded.count}
                                         </Link>
                                     </div>
                                 } else
                                     return <div style={style.cart}>
-                                        <Link to={"/account"} style={{ textDecoration: 'none' }}>
+                                        <Link to={"/account"} style={style.textCartCount}>
                                             {this.state.cartCount}
                                         </Link>
                                     </div>
@@ -70,9 +70,9 @@ class header extends Component {
     componentWillUpdate = async () => {
         if (GLOBAL.userId != '') {
             const { client } = this.props
-            const res = await client.query({ query: FETCH_CART, variables: { userId: GLOBAL.userId } })
-            if (res.data && res.data.carts.length != this.state.cartCount) {
-                this.setState({ cartCount: res.data.carts.length })
+            const res = await client.query({ query: FETCH_CART, variables: { userId: GLOBAL.userId, limit: 5, offset: 0, count: 0 } })
+            if (res.data && res.data.carts && res.data.carts.count != this.state.cartCount) {
+                this.setState({ cartCount: res.data.carts.count })
             }
         }
         if (this.state.opacity == 1)
@@ -116,8 +116,8 @@ const style = {
         position: 'relative',
         right: '5px',
         top: '-13px',
-        height: '20px',
-        width: '20px',
+        height: '22px',
+        width: '22px',
         borderRadius: '50%',
         backgroundColor: '#FFCA28',
         display: 'flex',
@@ -126,8 +126,9 @@ const style = {
         justifyContent: 'center',
     },
     textCartCount: {
-        color: 'white',
+        color: '#212121',
         fontFamily: 'Roboto, Helvetica',
         fontWeight: 500,
+        textDecoration: 'none'
     }
 }

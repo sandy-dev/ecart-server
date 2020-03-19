@@ -7,7 +7,7 @@ import IconStar from '@material-ui/icons/Star'
 import RemoveCircle from '@material-ui/icons/RemoveCircle'
 import Category from '_src/config/category.json'
 import GLOBAL from '_src/components/common/global'
-import { Grid, Typography, Divider } from '@material-ui/core'
+import { Grid, Typography, Divider, List, ListItem } from '@material-ui/core'
 
 const colorBody = '#9E9E9E'
 const Categories = Category[0]['category']
@@ -136,30 +136,39 @@ const ListBook = (props) => {
 
 const ListAuthor = (props) => {
     return (
-        props.data.map((item, index) => {
-            return (
-                <React.Fragment key={index}>
-                    <Grid container direction='row' style={style.itemRows} >
-                        <Grid item sm={8} style={style.center}>
-                            <Typography variant="caption"> {item.name}</Typography>
-                        </Grid>
-                        <Grid item sm={4} style={style.center}>
-                            <Link to={{ pathname: '/books/', author: { id: item.id, name: item.name } }}>
-                                <Typography variant="caption"> Books</Typography>
-                            </Link>
-                            {
-                                GLOBAL.email == 'confikr.lab@gmail.com' &&
-                                <RemoveCircle onClick={() => {
-                                    props.onRemoveClick(item.id)
-                                }} />
-                            }
-                        </Grid>
+        <List style={{ flexGrow: 1 }}>
+            <ListItem style={style.listItemHeader}>
+                <Grid container spacing={1}>
+                    <Grid item sm={9} style={style.center}>
+                        <Typography variant="caption" noWrap={true}> Name </Typography>
                     </Grid>
-                    <Divider />
-                </React.Fragment>
-            )
-        })
-
+                    <Grid item sm={3} style={style.center}>
+                        <Typography variant="caption" noWrap={true}> Links </Typography>
+                    </Grid>
+                </Grid>
+            </ListItem>
+            {
+                props.data.map((item, index) => {
+                    return (
+                        <React.Fragment key={index} >
+                            <ListItem style={style.listItem}>
+                                <Grid container spacing={1}>
+                                    <Grid item sm={9} style={style.center}>
+                                        <Typography variant="caption" noWrap={true}> {item.name} </Typography>
+                                    </Grid>
+                                    <Grid item sm={3} style={style.center}>
+                                        <Link to={{ pathname: '/books/', authorId: item.id, authorName: item.name }}>
+                                            <Typography variant="caption"> Books</Typography>
+                                        </Link>
+                                    </Grid>
+                                </Grid>
+                            </ListItem>
+                            <Divider variant='middle' />
+                        </React.Fragment>
+                    )
+                })
+            }
+        </List>
     )
 }
 
@@ -184,18 +193,51 @@ const ListRating = (props) => {
 
 const ListCart = (props) => {
     return (
-        props.data.map((item, index) => {
-            return (
-                <div key={index} className='item-list-cart'>
-                    <span>{item.book.name}</span>
-                    <span>${item.book.price}</span>
-                    <span>{item.date}</span>
-                    <RemoveCircle onClick={() => {
-                        props.onRemoveClick(item._id)
-                    }} />
-                </div>
-            )
-        })
+        <List style={{ flexGrow: 1 }}>
+            <ListItem style={style.listItemHeader}>
+                <Grid container spacing={1}>
+                    <Grid item sm={3} style={style.center}>
+                        <Typography variant="caption" noWrap={false}> Name </Typography>
+                    </Grid>
+                    <Grid item sm={3} style={style.center}>
+                        <Typography variant="caption" noWrap={false}> Price </Typography>
+                    </Grid>
+                    <Grid item sm={3} style={style.center}>
+                        <Typography variant="caption" noWrap={false}> Date </Typography>
+                    </Grid>
+                    <Grid item sm={3} style={style.center}>
+                        <Typography variant="caption" noWrap={false}> Remove </Typography>
+                    </Grid>
+                </Grid>
+            </ListItem>
+            {
+                props.data.map((item, index) => {
+                    return (
+                        <React.Fragment key={index} >
+                            <ListItem style={style.listItem}>
+                                <Grid container spacing={1}>
+                                    <Grid item sm={3} style={style.center}>
+                                        <Typography variant="caption" noWrap={false}> {item.book.name} </Typography>
+                                    </Grid>
+                                    <Grid item sm={3} style={style.center}>
+                                        <Typography variant="caption" noWrap={false}> {item.book.price} </Typography>
+                                    </Grid>
+                                    <Grid item sm={3} style={style.center}>
+                                        <Typography variant="caption" noWrap={false}> {item.date} </Typography>
+                                    </Grid>
+                                    <Grid item sm={3} style={style.center}>
+                                        <RemoveCircle style={{ cursor: 'pointer' }} onClick={() => {
+                                            props.onRemoveClick(item._id)
+                                        }} />
+                                    </Grid>
+                                </Grid>
+                            </ListItem>
+                            <Divider variant='middle' />
+                        </React.Fragment>
+                    )
+                })
+            }
+        </List>
     )
 }
 
@@ -216,13 +258,20 @@ const style = {
         display: 'flex',
         justifyContent: 'center',
         alignItems: 'center',
-        padding: 10
+        padding: 3,
     },
     itemRows: {
-        paddingTop: 3,
-        paddingBottom: 3,
         flexDirection: 'row',
         alignItems: 'space-between',
         justifyContent: 'space-between',
+    },
+    listItem: {
+        flexGrow: 1,
+        justifyContent: 'space-between'
+    },
+    listItemHeader: {
+        flexGrow: 1,
+        justifyContent: 'space-between',
+        backgroundColor: '#F5F5F5'
     }
 }

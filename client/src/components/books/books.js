@@ -12,17 +12,17 @@ class books extends Component {
     render() {
         return (
             <Grid container style={style.container}>
-                <Grid item>
-                    <Grid item xs>
-                        <BookList
-                            category={this.props.location.category}
-                            sort={this.props.location.sort}
-                            author={this.props.location.author} />
+                <Grid item style={{ width: '100%' }}>
+                    <BookList
+                        category={this.props.location ? this.props.location.category : 0}
+                        sort={this.props.location ? this.props.location.sort : 'rating'}
+                        authorId={this.props.location ? this.props.location.authorId : ''}
+                        authorName={this.props.location ? this.props.location.authorName : ''}
+                        isSignedIn={this.props.location ? this.props.location.isSignedIn : this.props.isSignedIn} />
 
-                    </Grid>
                 </Grid>
                 <Grid item id='dvBookDetail'>
-                    <BookDetail />
+                    <BookDetail isSignedIn={this.props.isSignedIn} />
                 </Grid>
             </Grid>
         )
@@ -31,15 +31,14 @@ class books extends Component {
 
 const style = {
     container: {
-        flex: 1,
         height: '100%',
         minHeight: '100vh',
         display: 'flex',
         flexDirection: 'column',
         alignItems: 'center',
         justifyContent: 'flex-start',
-        paddingLeft: '2%',
-        paddingRight: '2%',
+        paddingLeft: '3%',
+        paddingRight: '3%',
         paddingBottom: 40
     },
 }

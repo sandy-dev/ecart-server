@@ -6,19 +6,23 @@ import IconStar from '@material-ui/icons/Star'
 import Edit from '@material-ui/icons/Edit'
 import Category from '_src/config/category.json'
 import GLOBAL from '_src/components/common/global'
-import { Query, withApollo } from 'react-apollo'
+import flowright from "lodash.flowright"
+import { Query, graphql } from 'react-apollo'
 import { ADD_CART, FETCH_CART } from '_src/components/queries/cart'
 import { FETCH_BOOKS, RATING_ADDED_SUB } from '_src/components/queries/books'
 import Paging from '_src/components/common/pagingDatabase'
 import { Grid, Card, CardActionArea, CardMedia, CardContent, CardActions, Typography, Button, Divider } from '@material-ui/core'
+import Popper from '_src/components/common/popper'
 const item_per_page = 4
 const Categories = Category[0]['category']
 
-export class bookItemsPage extends Component {
+class bookItemsPage extends Component {
     constructor(props) {
         super(props)
         this.state = {
             offset: 0,
+            anchorEl: null,
+            badgeText: ''
         }
     }
     render() {
@@ -28,13 +32,21 @@ export class bookItemsPage extends Component {
                 limit: item_per_page, offset: this.state.offset
             }}>
                 {({ loading, error, data }) => {
-                    if (loading) return <span>Loading...</span>
-                    if (error) return <span> error</span>
+                    if (loading) return <span style={style.loader}>Loading...</span>
+                    if (error) return <span style={style.loader}> error</span>
+                    if (data.books.count == 0) return <span style={style.loader}> No data</span>
+
                     return (
                         <React.Fragment>
-                            <BookItemsCard books={data.books} onCartClick={(itemId) => { this.cartClicked(itemId) }} />
+                            <BookItemsCard
+                                books={data.books}
+                                onCartClick={(event, itemId) => { this.cartClicked(event, itemId) }}
+                                anchorEl={this.state.anchorEl}
+                                badgeText={this.state.badgeText}
+                            />
                             <Paging
                                 itemCount={data.books.count}
+                                type='book'
                                 filters={{ sort: this.props.filter.sort, category: this.props.filter.category, author: this.props.filter.author }}
                                 onClick={(index) => { this.GetPaginatedData(index) }}
                             />
@@ -44,17 +56,45 @@ export class bookItemsPage extends Component {
             </Query >
         )
     }
-
     GetPaginatedData = async (index) => {
         this.setState({ offset: index * item_per_page })
     }
-    async cartClicked(itemid) {
-        const { client } = this.props
-        await client.mutate({
-            mutation: ADD_CART,
-            variables: { userId: GLOBAL.userId, bookId: itemid, date: this.formatDate(new Date(Date.now())) },
-            refetchQueries: [{ query: FETCH_CART, variables: { userId: GLOBAL.userId } }]
-        })
+    async cartClicked(event, itemid) {
+        event.preventDefault()
+        let target = event.currentTarget
+
+        const isLoggedIn = this.props.isSignedIn || GLOBAL.userId != ''
+        if (!isLoggedIn) {
+            this.showBadge(target, 'Please Log in to continue')
+            return false
+        }
+
+        const response = await this.props
+            .addCart({
+                userId: GLOBAL.userId,
+                bookId: itemid,
+                date: this.formatDate(new Date(Date.now()))
+            })
+            .then((res) => {
+            })
+            .catch((error) => {
+                console.log(error)
+            })
+
+        this.showBadge(target, 'Cart added succesfully')
+    }
+    async showBadge(target, text) {
+        await this.setState((prevState) => ({
+            anchorEl: prevState.anchorEl ? null : target,
+            badgeText: text
+        }))
+
+        setTimeout(() => {
+            this.setState({
+                anchorEl: null,
+                badgeText: ''
+            })
+        }, 1500)
     }
     formatDate(date) {
         var monthNames = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec']
@@ -64,7 +104,27 @@ export class bookItemsPage extends Component {
         return day + ' ' + monthNames[monthIndex] + ' ' + year
     }
 }
-export default withApollo(bookItemsPage)
+export default flowright(
+    graphql(ADD_CART, {
+        props: ({ mutate }) => ({
+            addCart: (params) => {
+                return mutate({
+                    variables: params,
+                    refetchQueries: [{ query: FETCH_CART, variables: { userId: GLOBAL.userId, limit: item_per_page, offset: 0, count: 0 } }]
+                    // update: (proxy, { data: { addCart } }) => {
+                    //     const oldCartItems = proxy.readQuery({ query: FETCH_CART, variables: { userId: GLOBAL.userId } })
+                    //     const modifiedCart = oldCartItems.carts.push(addCart)
+                    //     proxy.writeQuery({
+                    //         query: FETCH_CART,
+                    //         variables: { userId: GLOBAL.userId },
+                    //         data: modifiedCart,
+                    //     })
+                    // }
+                })
+            }
+        })
+    })
+)(bookItemsPage)
 
 const BookItemsCard = props => {
     return (
@@ -72,15 +132,10 @@ const BookItemsCard = props => {
             return (
                 <Card key={index} style={style.cardContainer}>
                     <Grid container spacing={3}>
-                        <Grid item sm={3} style={style.center}>
-                            <CardMedia
-                                component="img"
-                                height="200"
-                                image={`/uploads/${item.image}`}
-                                title="Contemplative Reptile"
-                            />
+                        <Grid item sm={4} style={style.center}>
+                            <img src={`/uploads/${item.image}`} style={style.media} />
                         </Grid>
-                        <Grid item sm={6} style={style.centerColumnLeft}>
+                        <Grid item sm={4} style={style.centerColumnLeft}>
                             <Grid item style={style.centerRowLeft}>
                                 <IconStar style={{ height: '20px', marginRight: '4px' }} className='starselected' />
                                 {item.ratingCount > 0 && <span> {item.averageRating} / {item.ratingCount} </span>}
@@ -111,10 +166,14 @@ const BookItemsCard = props => {
                                 <Typography variant="button" style={style.infoBox}> {item.pages}</Typography>
                             </Grid>
                         </Grid>
-                        <Grid item sm={3} style={style.centerColumnLeft}>
+                        <Grid item sm={4} style={style.centerColumnLeft}>
                             <Button size="small" color="primary" onClick={(event) => PageRedirect(event, `bookdetail`, item.id)}> Check Reviews </Button>
                             <Button size="small" color="primary" onClick={(event) => PageRedirect(event, `bookdetail`, item.id)}> Check Detail </Button>
-                            <Button size="small" color="primary" onClick={() => { props.onCartClick(item.id) }}> Add To Car </Button>
+                            <Button size="small" color="primary" onClick={(event) => { props.onCartClick(event, item.id) }}> Add To Cart </Button>
+                            <Popper
+                                text={props.badgeText}
+                                anchorEl={props.anchorEl} />
+
                             {
                                 GLOBAL.email == 'confikr.lab@gmail.com' &&
                                 <Link to={{ pathname: '/books/add/', id: item.id }} className='list-details-actions tooltip'> <Edit /> </Link>
@@ -125,7 +184,6 @@ const BookItemsCard = props => {
             )
         })
     )
-
     function PageRedirect(event, page, id) {
         event.preventDefault()
         switch (page) {
@@ -165,6 +223,7 @@ const style = {
         display: 'flex',
         justifyContent: 'center',
         alignItems: 'center',
+        //flexGrow: 1
     },
     centerRow: {
         display: 'flex',
@@ -200,5 +259,17 @@ const style = {
         alignItems: 'center',
         paddingLeft: 10,
         color: '#9E9E9E',
+    },
+    media: {
+        width: '60%',
+        height: 200,
+        //height: 200
+    },
+    loader: {
+        display: 'flex',
+        flexDirection: 'column',
+        justifyContent: 'center',
+        alignItems: 'center',
+        flexGrow: 1,
     }
 }

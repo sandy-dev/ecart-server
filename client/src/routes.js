@@ -13,8 +13,8 @@ const ReactRouter = (props) => {
             <Switch>
                 <Route exact path="/" component={Books} />
                 <Route exact path="/books" component={Books} />
-                <Route exact path="/authors" component={Authors} />
-                <Route path="/books/details" exact component={BookDetail} />
+                <Route exact path="/authors" component={() => (<Authors isSignedIn={props.isSignedIn} />)} />
+                <Route path="/books/details" exact component={() => (<BookDetail isSignedIn={props.isSignedIn} />)} />
                 <Route exact path="/account" exact component={() => (<Account isSignedIn={props.isSignedIn} />)} />
                 <Route exact path="/login" exact component={() => (<Login isSignedIn={props.isSignedIn} />)} />
                 <Route path="*" component={NotFound} />

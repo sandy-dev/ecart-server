@@ -3,8 +3,9 @@ import List from '@material-ui/core/List'
 import ListItem from '@material-ui/core/ListItem'
 import ListItemIcon from '@material-ui/core/ListItemIcon'
 import ListItemText from '@material-ui/core/ListItemText'
-import BookOutlined from '@material-ui/icons/BookOutlined'
+import BookOutlined from '@material-ui/icons/BookRounded'
 import Person from '@material-ui/icons/Person'
+import AccountBox from '@material-ui/icons/AccountBox'
 import Sort from '@material-ui/icons/Sort'
 import PersonOutline from '@material-ui/icons/PersonOutline'
 import MuiExpansionPanel from '@material-ui/core/ExpansionPanel'
@@ -16,19 +17,37 @@ import Divider from '@material-ui/core/Divider'
 import { withStyles } from '@material-ui/core/styles'
 import { Link } from 'react-router-dom'
 import Category from '_src/config/category.json'
+import { Query, withApollo } from 'react-apollo'
+import { FETCH_AUTHORS } from '_src/components/queries/authors'
+import Books from '_src/components/books/books'
+import Tooltip from '@material-ui/core/Tooltip'
 const Categories = Category[0]['category']
-
 const styles = {
     items: {
         height: 40,
     },
-    itemsNested: {
+    Link: {
         height: 35,
         backgrounfColor: '#EEEEEE'
     },
     list: {
         padding: 0,
         margin: 0
+    },
+    listAuthor: {
+        padding: 0,
+        margin: 0,
+        maxHeight: 250,
+        overflowY: 'scroll'
+    },
+    linkNested: {
+        height: '100%',
+        width: '100%',
+        textDecoration: 'none',
+        color: '#3f51b5'//colorprimary
+    },
+    icon:{
+        color:'#9E9E9E'
     }
 }
 
@@ -37,19 +56,25 @@ export const sidebar = (props) => {
         <div>
             <List style={styles.list}>
                 <ListItem button component={Link} to={"/books"} style={styles.items}>
-                    <ListItemIcon><BookOutlined /></ListItemIcon>
+                    <Tooltip title="Books" placement='right'>
+                        <ListItemIcon><BookOutlined style={styles.icon} /></ListItemIcon>
+                    </Tooltip>
                     <Typography variant="caption">BOOKS</Typography>
                 </ListItem>
                 <Divider />
                 <ListItem button component={Link} to={"/authors"} style={styles.items}>
-                    <ListItemIcon><Person /></ListItemIcon>
+                    <Tooltip title="Authors" placement='right'>
+                        <ListItemIcon><Person style={styles.icon} /></ListItemIcon>
+                    </Tooltip>
                     <Typography variant="caption">AUTHORS</Typography>
                 </ListItem>
-
+                <Divider />
                 {
                     props.isSignedIn &&
                     <ListItem button component={Link} to={"/account"} style={styles.items}>
-                        <ListItemIcon><Person /></ListItemIcon>
+                        <Tooltip title="Account" placement='right'>
+                            <ListItemIcon><AccountBox style={styles.icon} /></ListItemIcon>
+                        </Tooltip>
                         <Typography variant="caption">ACCOUNT</Typography>
                     </ListItem>
                 }
@@ -72,19 +97,18 @@ export const sidebar = (props) => {
             </List>
 
 
-
             <ExpansionPanel onChange={() => { props.expansionClicked() }} style={styles.list}>
                 <ExpansionPanelSummary expandIcon={props.isOpen && <ExpandMoreIcon />} style={styles.items}>
-                    <ListItemIcon><Sort /></ListItemIcon>
-                    {props.isOpen && <Typography variant="caption">SORT</Typography>}
+                    {/* <ListItemIcon><Sort /></ListItemIcon> */}
+                    <Typography variant="caption"> Sort </Typography>
                 </ExpansionPanelSummary>
                 {/* <Divider /> */}
                 <List style={styles.list}>
-                    <ListItem button component={Link} to={{ pathname: '/books/', sort: 'rating' }} style={styles.itemsNested}>
+                    <ListItem button component={Link} to={{ pathname: '/books/', sort: 'rating', isSignedIn: props.isSignedIn }} style={styles.linkNested}>
                         <Typography variant="caption">RATING</Typography>
                     </ListItem>
                     <Divider />
-                    <ListItem button component={Link} to={{ pathname: '/books/', sort: 'publish' }} style={styles.itemsNested}>
+                    <ListItem button component={Link} to={{ pathname: '/books/', sort: 'publish', isSignedIn: props.isSignedIn }} style={styles.linkNested}>
                         <Typography variant="caption">PUBLISH</Typography>
                     </ListItem>
                 </List>
@@ -92,8 +116,7 @@ export const sidebar = (props) => {
 
             <ExpansionPanel onChange={() => { props.expansionClicked() }}>
                 <ExpansionPanelSummary expandIcon={props.isOpen && <ExpandMoreIcon />} style={styles.items}>
-                    <ListItemIcon><Sort /></ListItemIcon>
-                    {props.isOpen && <Typography variant="caption"> CATEGORY </Typography>}
+                    <Typography variant="caption"> Category </Typography>
                 </ExpansionPanelSummary>
                 <List style={styles.list}>
                     {/* <Divider /> */}
@@ -101,7 +124,7 @@ export const sidebar = (props) => {
                         Categories.map((item, index) => {
                             return (
                                 <React.Fragment key={index} >
-                                    <ListItem button component={Link} to={{ pathname: '/books/', category: item.id }} style={styles.itemsNested}>
+                                    <ListItem button component={Link} to={{ pathname: '/books/', category: item.id, isSignedIn: props.isSignedIn }} style={styles.linkNested}>
                                         <Typography variant="caption">{item.name.toUpperCase()}</Typography>
                                     </ListItem>
                                     <Divider />
@@ -114,30 +137,44 @@ export const sidebar = (props) => {
 
             <ExpansionPanel onChange={() => { props.expansionClicked() }}>
                 <ExpansionPanelSummary expandIcon={props.isOpen && <ExpandMoreIcon />} aria-controls="panel1a-content" id="panel1a-header">
-                    <ListItemIcon><Sort /></ListItemIcon>
-                    {props.isOpen && <Typography variant="caption"> AUTHORS </Typography>}
+                    <Typography variant="caption"> Author </Typography>
                 </ExpansionPanelSummary>
-                <List style={styles.list}>
-                    <Divider />
-                    {
-                        Categories.map((item, index) => {
+                <List style={styles.listAuthor}>
+
+                    <Query query={FETCH_AUTHORS}>
+                        {({ loading, error, data }) => {
+                            if (loading) return <h4>Loading...</h4>
+                            if (error) console.log(error)
                             return (
-                                <React.Fragment key={index}>
-                                    <ListItem button component={Link} to={{ pathname: '/books/', category: item.id }}>
-                                        <ListItemText primary={item.name} />
-                                    </ListItem>
-                                    <Divider />
-                                </React.Fragment>
+                                data.authors.map((item, index) => {
+                                    return (
+                                        <React.Fragment key={index}>
+                                            <ListItem button style={styles.linkNested}>
+                                                <Link
+                                                    to={{ pathname: '/books/', authorId: item.id, authorName: item.name, isSignedIn: props.isSignedIn }}
+                                                    style={styles.linkNested}
+                                                >
+                                                    <Typography variant="caption">{item.name}</Typography>
+                                                </Link>
+
+                                            </ListItem>
+                                            <Divider />
+
+                                        </React.Fragment>
+
+                                    )
+                                })
                             )
-                        })
-                    }
+                        }}
+                    </Query>
+
                 </List>
             </ExpansionPanel>
 
         </div>
     )
 }
-export default sidebar
+export default withApollo(sidebar)
 
 const ExpansionPanel = withStyles({
     root: {

@@ -117,8 +117,8 @@ function ScrollTop(props) {
     });
 
     const handleClick = event => {
-        document.body.scrollTop = 10
-        document.documentElement.scrollTop = 10
+        document.body.scrollTop = 0
+        document.documentElement.scrollTop = 0
         // const anchor = (event.target.ownerDocument || document).querySelector('#back-to-top-anchor');
         // if (anchor) {
         //     anchor.scrollIntoView({ behavior: 'smooth', block: 'center' });
@@ -196,8 +196,14 @@ const useStyles = makeStyles(theme => ({
         ...theme.mixins.toolbar,
     },
     content: {
+        display: 'flex',
+        flexDirection: 'column',
+        alignItems: 'center',
+        justifyContent: 'center',
         flexGrow: 1,
+        width: '100%',
         paddingTop: theme.spacing(1),
+        backgroundColor:'#F5F5F5'
     },
 
     //scrollbar

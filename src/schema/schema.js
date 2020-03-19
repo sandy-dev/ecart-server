@@ -71,6 +71,11 @@ export default `
     Books: [Book]
   }
 
+  type CartResult {
+    count: Int
+    Carts: [Cart]
+  }
+
   type Query {
     
     book( id: String!): Book
@@ -78,7 +83,6 @@ export default `
 
     author( id: String!): Author
     authors: [Author]
-
 
     rating( id: String!): Rating
     ratings: [Rating]
@@ -88,8 +92,7 @@ export default `
     users: [User]
 
     cart(userId: String!): Cart
-    carts(userId: String!): [Cart]
-
+    carts(userId: String!, limit: Int!, offset :Int!, count :Int!): CartResult
   }
 
 
@@ -124,7 +127,6 @@ export default `
     addCart(userId: String!,bookId: String!,date: String!): Cart
     removeCart(id: String!,userId: String!): Result
     
-    
     addRating(rating: Int!,review: String!,bookId: String!,userId: String!,date: String!): Rating
     
     addUser(uid: String!,name: String!,email: String!,image: String!): User
@@ -135,7 +137,8 @@ export default `
   }
 
   type Result {
-    count: String
+    count: Int
+    id: String
   }
 
   type Subscription {

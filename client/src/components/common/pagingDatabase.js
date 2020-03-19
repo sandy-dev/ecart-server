@@ -12,7 +12,6 @@ export class paging extends Component {
             currentIndex: 0
         }
     }
-
     render() {
         const pageCount = this.props.itemCount == 0 ? 0 : Math.ceil(this.props.itemCount / itemsPerPage)
         let pagingArray = [...Array(pageCount).keys()]
@@ -47,10 +46,12 @@ export class paging extends Component {
         this.props.onClick(index)
     }
     componentDidUpdate() {
-        let isEqual = JSON.stringify(this.props.filters) === JSON.stringify(filter)
-        if (!isEqual) {
-            filter = this.props.filters
-            this.setState({ currentIndex: 0 })
+        if (this.props.type == 'book') {
+            let isEqual = JSON.stringify(this.props.filters) === JSON.stringify(filter)
+            if (!isEqual) {
+                filter = this.props.filters
+                this.setState({ currentIndex: 0 })
+            }
         }
     }
 }

@@ -4,7 +4,7 @@ import List from '_src/components/common/list'
 import Paging from '_src/components/common/paging'
 import Search from '@material-ui/icons/Search'
 import { FETCH_AUTHORS, REMOVE_AUTHOR } from '_src/components/queries/authors'
-import { Grid, Card, Typography, Button, Divider, Paper } from '@material-ui/core'
+import { Grid, Card, Typography, Button, Divider, Paper, CardHeader, CardContent } from '@material-ui/core'
 
 export class authors extends Component {
     constructor(props) {
@@ -18,6 +18,29 @@ export class authors extends Component {
     render() {
         return (
             <div style={style.conatiner}>
+                <Card elevation={0} style={style.card}>
+                    <CardHeader
+                        style={style.header}
+                        subheader="Author List"
+                    />
+                    <Divider style={style.divider} />
+                    <CardContent style={style.cardContain}>
+                        <Query query={FETCH_AUTHORS}>
+                            {({ loading, error, data }) => {
+                                if (loading) return <h4>Loading...</h4>
+                                if (error) console.log(error)
+                                return (
+                                    <Paper elevation={0} style={{ width: '100%', padding: '10%' }}>
+                                        <List listData={this.state.arrayRender} source={'author'} onRemoveClick={(item) => { this.removeAuthor(item) }} />
+                                        <Paging array={data.authors} searchText={this.state.inputText} onClick={(data) => { this.GetPaginatedData(data) }} />
+                                    </Paper>
+                                )
+                            }}
+                        </Query>
+                    </CardContent>
+                </Card>
+                {/* 
+
                 <Paper sm={12} elevation={0} style={style.header}>
                     <Typography variant="h6"> Author List</Typography>
                 </Paper>
@@ -32,7 +55,7 @@ export class authors extends Component {
                             </Paper>
                         )
                     }}
-                </Query>
+                </Query> */}
             </div>
         )
     }
@@ -70,26 +93,43 @@ export class authors extends Component {
 export default withApollo(authors)
 const style = {
     conatiner: {
-        flex: 1,
+        display: 'flex',
+        flexDirection: 'column',
+        alignItems: 'center',
+        justifyContent: 'flex-start',
+        flexGrow: 1,
         height: '100%',
-        minHeight: '100vh'
+        width: '100%',
+        minHeight: '100vh',
+        padding: 10
+    },
+    card: {
+        display: 'flex',
+        width: '90%',
+        flexDirection: 'column',
+        justifyContent: 'flex-start',
+        alignItems: 'center',
     },
     header: {
-        height: 80,
+        display: 'flex',
+        flexDirection: 'column',
+        alignItems: 'flex-start',
+        justifyContent: 'center',
         width: '100%',
-        display: 'flex',
-        justifyContent: 'center',
-        alignItems: 'center',
     },
-    content: {
+    cardContain: {
         display: 'flex',
-        justifyContent: 'center',
+        flexDirection: 'column',
         alignItems: 'center',
-        padding: 20
+        justifyContent: 'flex-start',
+        width: '100%',
     },
     center: {
         display: 'flex',
         justifyContent: 'center',
         alignItems: 'center',
+    },
+    divider: {
+        width: '100%'
     },
 }

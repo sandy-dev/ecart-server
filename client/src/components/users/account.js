@@ -1,125 +1,209 @@
 import React, { Component } from 'react'
-import { withApollo, Query } from 'react-apollo'
+import { withApollo, graphql, Query } from 'react-apollo'
+import flowright from "lodash.flowright"
 import { FETCH_CART, REMOVE_CART } from '_src/components/queries/cart'
 import List from '_src/components/common/list'
+import Paging from '_src/components/common/pagingDatabase'
 import GLOBAL from '_src/components/common/global'
-import { Grid, Card, Typography, Divider, Paper } from '@material-ui/core'
+import { Grid, Card, Typography, Divider, Paper, CardHeader, CardContent, Avatar } from '@material-ui/core'
 import { Redirect } from 'react-router-dom'
+import { red } from '@material-ui/core/colors'
+import { AccountBox } from '@material-ui/icons'
 
+const item_per_page = 4
 export class account extends Component {
     constructor(props) {
         super(props)
-
         this.state = {
-            cartData: []
+            cartData: [],
+            offset: 0,
+            count: 0
         }
     }
-
     render() {
-
         if (!this.props.isSignedIn)
             return (<Redirect to={{ pathname: "/" }} />)
-
         return (
             <div style={style.conatiner}>
-
-                <Card sm={12} elevation={0} style={style.card}>
-                    <Paper sm={12} elevation={0} style={style.header}>
-                        <Typography variant="h6"> Account Details</Typography>
-                    </Paper>
+                <Card elevation={0} style={style.card}>
+                    <CardHeader
+                        style={style.mainHeader}
+                        avatar={
+                            <Avatar aria-label="recipe" style={style.avatar}>
+                                <AccountBox />
+                            </Avatar>
+                        }
+                        title={GLOBAL.name}
+                    />
                     <Divider style={style.divider} />
+                    <CardContent style={style.contain}>
+                        <Grid container spacing={0} direction='column'>
+                            <Grid item sm={12}>
+                                <Card elevation={0}>
+                                    <CardHeader
+                                        style={style.header}
+                                        subheader="Account Details"
+                                    />
+                                    <CardContent style={style.cardContain}>
+                                        <Grid container spacing={1}>
+                                            <Grid item sm={12} style={style.rows}>
+                                                <Typography variant="caption" noWrap={true} style={style.text}> Name  : </Typography>
+                                                <Typography variant="caption" noWrap={true} style={style.text}> {GLOBAL.name}</Typography>
+                                            </Grid>
+                                            <Grid item sm={12} style={style.rows}>
+                                                <Typography variant="caption" noWrap={true} style={style.text}> Email  :</Typography>
+                                                <Typography variant="caption" noWrap={true} style={style.text}> {GLOBAL.email}</Typography>
+                                            </Grid>
+                                        </Grid>
+                                    </CardContent>
+                                </Card>
+                            </Grid>
+                            <Grid item sm={12}>
+                                <Card elevation={0} style={{ padding: 0, width: '100%'}}>
+                                    <CardHeader
+                                        style={style.header}
+                                        subheader="Cart Items"
+                                    />
+                                    <CardContent style={style.cardContain}>
+                                        <Query
+                                            query={FETCH_CART}
+                                            fetchPolicy='no-cache'
+                                            variables={{
+                                                userId: GLOBAL.userId,
+                                                limit: item_per_page,
+                                                offset: this.state.offset,
+                                                count: this.state.count
+                                            }}>
 
+                                            {({ loading, error, data }) => {
+                                                if (loading) return <h4>Loading...</h4>
+                                                if (error) console.log(error)
 
-                    <Grid container style={style.contain}>
-                        <Grid item sm={12}>
-                            <Typography variant="button" style={style.text}> Name</Typography>
-                            <Typography variant="caption" style={style.text}> Name {GLOBAL.name}</Typography>
+                                                if (data.carts && data.carts.count > 0) {
+                                                    return (
+                                                        <div style={{ width: '100%' }}>
+                                                            <List listData={data.carts.Carts} onClick={(item) => { this.removeCart(item) }} source={'cart'} />
+                                                            <Paging
+                                                                itemCount={data.carts.count}
+                                                                type='cart'
+                                                                onClick={(data) => { this.GetPaginatedData(data) }} />
+                                                        </div>
+                                                    )
+                                                }
+                                                else return <Typography variant="caption"> No Items</Typography>
+                                            }}
+                                        </Query>
+                                    </CardContent>
+                                </Card>
+                            </Grid>
                         </Grid>
-                        <Grid item sm={12}>
-                            <Typography variant="button" style={style.text}> Email</Typography>
-                            <Typography variant="caption" style={style.text}> Name {GLOBAL.email}</Typography>
-                        </Grid>
-                    </Grid>
-
-                    <Paper sm={12} elevation={0} style={style.header}>
-                        <Typography variant="h6"> Cart Items</Typography>
-                    </Paper>
-                    <Divider style={style.divider} />
-                    <Paper sm={12} elevation={0} style={style.header}>
-                        <Query query={FETCH_CART} variables={{ userId: GLOBAL.userId }}>
-                            {({ loading, error, data }) => {
-                                if (loading) return <h4>Loading...</h4>
-                                if (error) console.log(error)
-
-                                if (data.carts && data.carts.length > 0)
-                                    return <List listData={data.carts} onClick={(item) => { this.removeCart(item) }} source={'cart'} />
-                                else
-                                    return <Typography variant="caption"> No Items</Typography>
-
-                            }}
-                        </Query>
-                    </Paper>
+                    </CardContent>
                 </Card>
-            </div>
+            </div >
         )
     }
-
     removeCart = async (item) => {
-        const { client } = this.props
-        const res = await client.mutate({
-            mutation: REMOVE_CART,
-            variables: { id: item, userId: GLOBAL.userId },
-            refetchQueries: [{ query: FETCH_CART, variables: { userId: GLOBAL.userId } }]
-        })
-        if (res.data.removeCart != null && res.data.removeCart.count != null) {
-
-            let data = this.state.cartData
-            let dataNew = []
-            data.forEach((item) => {
-                if (String(item._id).includes(res.data.removeCart.count)) {
-                    dataNew = data.filter(e => !String(e._id).includes(res.data.removeCart.count))
+        const response = await this.props
+            .removeCart({
+                id: item,
+                userId: GLOBAL.userId,
+                offset: this.state.offset
+            })
+            .then((res) => {
+                if (res.data.removeCart.count == this.state.offset && this.state.offset > 0) {
+                    this.setState({ count: res.data.removeCart.count, offset: this.state.offset - item_per_page })
+                }
+                else {
+                    this.setState({ count: res.data.removeCart.count })
                 }
             })
-            this.setState({ cartData: dataNew })
-        }
+            .catch((error) => {
+                console.log(error)
+            })
+    }
+    GetPaginatedData = async (index) => {
+        this.setState({ offset: index * item_per_page })
     }
 }
-
-export default withApollo(account)
+export default flowright(
+    graphql(REMOVE_CART, {
+        props: ({ mutate }) => ({
+            removeCart: (params) => {
+                return mutate({
+                    variables: { id: params.id, userId: params.userId },
+                })
+            }
+        })
+    })
+)(withApollo(account))
 
 const style = {
     conatiner: {
-        flex: 1,
-        height: '100%',
-        minHeight: '100vh',
         display: 'flex',
         flexDirection: 'column',
         alignItems: 'center',
         justifyContent: 'flex-start',
-        padding: '5%'
+        flexGrow: 1,
+        height: '100%',
+        width: '100%',
+        minHeight: '100vh',
+        padding: 10
     },
     card: {
         display: 'flex',
+        width: '100%',
         flexDirection: 'column',
-        justifyContent: 'center',
+        justifyContent: 'flex-start',
         alignItems: 'center',
-        padding: 10,
-        width: '100%'
+    },
+    mainHeader: {
+        display: 'flex',
+        flexDirection: 'column',
+        alignItems: 'center',
+        justifyContent: 'center',
+        width: '100%',
+    },
+    header: {
+        display: 'flex',
+        flexDirection: 'column',
+        alignItems: 'flex-start',
+        justifyContent: 'center',
+        width: '100%',
     },
     contain: {
         display: 'flex',
         flexDirection: 'column',
         alignItems: 'center',
-        justifyContent: 'center',
-        padding: 20
+        justifyContent: 'flex-start',
+        width: '100%',
+        padding: 0
+    },
+    cardContain: {
+        display: 'flex',
+        flexDirection: 'column',
+        alignItems: 'center',
+        justifyContent: 'flex-start',
+        width: '100%',
     },
     divider: {
         width: '100%'
     },
-    header: {
-        padding: 10
-    },
     text: {
-        padding: 5
+        paddingLeft: 5,
+        paddingRight: 5
+    },
+    list: {
+        padding: 10,
+        width: '100%'
+    },
+    avatar: {
+        backgroundColor: red[500],
+    },
+    rows: {
+        display: 'flex',
+        flexDirection: 'row',
+        alignItems: 'center',
+        justifyContent: 'center',
+        width: '100%',
     }
 }

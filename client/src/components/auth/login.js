@@ -1,6 +1,7 @@
 import React, { Component } from 'react'
 import { firebase, StyledFirebaseAuth } from '_src/components/auth/firebase'
-import { Container, Card, Typography, Divider } from '@material-ui/core'
+import { Container, Card, CardHeader, CardContent, Avatar, Typography, Divider } from '@material-ui/core'
+import { AccountBox } from '@material-ui/icons'
 import { Redirect } from 'react-router-dom'
 
 const _uiConfig = {
@@ -29,16 +30,27 @@ class Login extends Component {
 
         return (
             <div style={style.conatiner}>
-                <Card sm={12} elevation={1} style={style.login}>
-                    <Card sm={12} elevation={0} style={style.header}>
-                        <Typography variant="button"> Login using google and firebase</Typography>
-                    </Card>
+                <Card sm={12} elevation={1} style={style.login} style={style.login}>
+                    <CardHeader
+                        style={style.contain}
+                        avatar={
+                            <Avatar aria-label="recipe" style={style.avatar}>
+                                <AccountBox />
+                            </Avatar>
+                        }
+                        title="Log in"
+                    />
                     <Divider style={style.divider} />
-                    <StyledFirebaseAuth
-                        uiConfig={_uiConfig}
-                        firebaseAuth={firebase.auth()} />
+                    <CardContent style={style.content}>
+                        <Typography variant="button"> Login using google and firebase</Typography>
+                        {/* <Divider style={style.divider} variant='inset' /> */}
+                        <StyledFirebaseAuth
+                            uiConfig={_uiConfig}
+                            firebaseAuth={firebase.auth()} />
+                    </CardContent>
                 </Card>
             </div>
+
         )
     }
 
@@ -77,23 +89,33 @@ class Login extends Component {
 export default Login
 const style = {
     conatiner: {
-        flex: 1,
-        height: '100%',
-        minHeight: '100vh',
         display: 'flex',
         flexDirection: 'column',
         alignItems: 'center',
         justifyContent: 'flex-start',
-        paddingTop: '10%'
+        flexGrow: 1,
+        height: '100%',
+        width: '100%',
+        minHeight: '100vh',
+        paddingTop: 20
     },
     login: {
         display: 'flex',
+        height: '80%',
+        width: '80%',
         flexDirection: 'column',
-        justifyContent: 'center',
+        justifyContent: 'flex-start',
         alignItems: 'center',
-        padding: 10,
-        paddingTop: 20,
-        width: '80%'
+        padding: 20,
+    },
+    content: {
+        display: 'flex',
+        flexGrow: 1,
+        flexDirection: 'column',
+        justifyContent: 'flex-start',
+        alignItems: 'center',
+        height: '100%',
+        width: '100%',
     },
     divider: {
         width: '100%'

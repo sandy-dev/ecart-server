@@ -5,7 +5,7 @@ class NotFound extends Component {
 
     render() {
         return (
-            <div className='container-notFound'>
+            <div style={style.container}>
                 <img src={ErrorPage} style={{ height: '35vmin', width: '35vmin' }} />
             </div>
         )
@@ -13,3 +13,13 @@ class NotFound extends Component {
 }
 
 export default NotFound
+const style = {
+    container: {
+        height: '100%',
+        minHeight: '100vh',
+        display: 'flex',
+        flexDirection: 'column',
+        alignItems: 'center',
+        justifyContent: 'center',
+    },
+}

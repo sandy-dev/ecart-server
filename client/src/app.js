@@ -21,6 +21,7 @@ class App extends Component {
         return (
             <ApolloProvider client={AplloClient}>
                 <BrowserRouter>
+                    <UserSync signedIn={this.state.isSignedIn} user={this.state._user} />
                     <MiniDrawer isSignedIn={this.state.isSignedIn} />
 
                     {/* <Header isSignedIn={this.state.isSignedIn} user={this.state._user} />
