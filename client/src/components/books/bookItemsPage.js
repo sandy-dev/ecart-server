@@ -15,6 +15,7 @@ import { Grid, Card, CardActionArea, CardMedia, CardContent, CardActions, Typogr
 import Popper from '_src/components/common/popper'
 const item_per_page = 4
 const Categories = Category[0]['category']
+let filter = [{ sort: 'rating', category: 0, author: '' }]
 
 class bookItemsPage extends Component {
     constructor(props) {
@@ -55,6 +56,15 @@ class bookItemsPage extends Component {
                 }}
             </Query >
         )
+    }
+    componentDidUpdate() {
+        let isEqual = JSON.stringify(this.props.filter) === JSON.stringify(filter)
+        if (!isEqual) {
+            filter = this.props.filter
+            this.setState({ offset: 0 })
+            console.log(this.state.offset)
+
+        }
     }
     GetPaginatedData = async (index) => {
         this.setState({ offset: index * item_per_page })

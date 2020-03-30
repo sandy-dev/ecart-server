@@ -18,7 +18,7 @@ import { resolvers } from './schema/resolvers'
 //import auth from './middleware/auth'
 
 const mongoUrlLocal = 'mongodb://localhost:27017/test3'
-const mongoUrlLive = 'mongodb://127.0.0.1:27017/test3'
+const mongoUrlLive = 'mongodb+srv://test1:test1@tmcluster-sptsd.mongodb.net/test?retryWrites=true&w=majority'
 
 const schema = makeExecutableSchema({
     typeDefs,
@@ -79,7 +79,7 @@ mongoose.connection.once('open', () => {
 const PORT = process.env.PORT || 5000
 app.use('/graphql', bodyParser.json(), graphqlHTTP((request, response) => ({
     schema: schema,
-    graphiql: true,
+    graphiql: false,
     context: { request: request, response: response }
 })
 ))

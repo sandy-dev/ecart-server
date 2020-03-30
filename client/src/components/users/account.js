@@ -17,7 +17,7 @@ export class account extends Component {
         this.state = {
             cartData: [],
             offset: 0,
-            count: 0
+            count: -1
         }
     }
     render() {
@@ -59,7 +59,7 @@ export class account extends Component {
                                 </Card>
                             </Grid>
                             <Grid item sm={12}>
-                                <Card elevation={0} style={{ padding: 0, width: '100%'}}>
+                                <Card elevation={0} style={{ padding: 0, width: '100%' }}>
                                     <CardHeader
                                         style={style.header}
                                         subheader="Cart Items"
@@ -78,8 +78,7 @@ export class account extends Component {
                                             {({ loading, error, data }) => {
                                                 if (loading) return <h4>Loading...</h4>
                                                 if (error) console.log(error)
-
-                                                if (data.carts && data.carts.count > 0) {
+                                                if ( data.carts && data.carts.count > 0) {
                                                     return (
                                                         <div style={{ width: '100%' }}>
                                                             <List listData={data.carts.Carts} onClick={(item) => { this.removeCart(item) }} source={'cart'} />

@@ -46,13 +46,13 @@ export class paging extends Component {
         this.props.onClick(index)
     }
     componentDidUpdate() {
-        if (this.props.type == 'book') {
-            let isEqual = JSON.stringify(this.props.filters) === JSON.stringify(filter)
-            if (!isEqual) {
-                filter = this.props.filters
-                this.setState({ currentIndex: 0 })
-            }
-        }
+        // if (this.props.type == 'book') {
+        //     let isEqual = JSON.stringify(this.props.filters) === JSON.stringify(filter)
+        //     if (!isEqual) {
+        //         filter = this.props.filters
+        //         //this.setState({ currentIndex: 0 })
+        //     }
+        // }
     }
 }
 

@@ -23,6 +23,7 @@ class bookDetail extends Component {
             bookId: '',
             reviewHeight: '100%',
             anchorEl: null,
+            badgeText: ''
         }
     }
     render() {
@@ -31,7 +32,10 @@ class bookDetail extends Component {
         return (
             <React.Fragment>
                 {bookId != '' &&
-                    <Query query={FETCH_BOOK_ID} variables={{ id: bookId.toString() }}>
+                    <Query
+                        query={FETCH_BOOK_ID}
+                        fetchPolicy='no-cache'
+                        variables={{ id: bookId.toString() }}>
                         {({ loading, error, data }) => {
                             if (loading) return 'Loading...'
                             if (error) return `Error! ${error.message}`;
@@ -109,36 +113,44 @@ class bookDetail extends Component {
                                                                 )
                                                             })
                                                         }
+                                                        {data.book.ratings.length == 0 && <span style={style.loader}> No reviews </span>}
+
                                                     </Grid>
-                                                    {data.book.ratings.length == 0 && <span> No reviews </span>}
                                                 </Grid>
                                             </Grid>
                                         </Grid>
-                                        <Divider style={style.divider} />
-                                        <Grid item sm={12} style={style.center}>
-                                            <Grid container direction='column' style={style.centerColumn} spacing={1}>
+                                        {
+                                            !this.isReviewAlready(data.book.ratings) &&
+                                            <React.Fragment>
+                                                <Divider style={style.divider} />
                                                 <Grid item sm={12} style={style.center}>
-                                                    <Typography variant="button"> Add review</Typography>
+                                                    <Grid container direction='column' style={style.centerColumn} spacing={1}>
+                                                        <Grid item sm={12} style={style.center}>
+                                                            <Typography variant="button"> Add review</Typography>
+                                                        </Grid>
+                                                        {/* <Grid item sm={12} style={style.centerRow}>
+                                                            {this.state.reviewHeight == 0 && <Typography>Review successful</Typography>}
+                                                        </Grid> */}
+                                                        <Grid item sm={12} style={style.centerRow}>
+                                                            <Rating onClick={(rating) => this.setRating(rating)} active={true} />
+                                                        </Grid>
+                                                        <Grid item sm={12} style={style.centerRow}>
+                                                            <textarea style={{ height: '70px' }} value={this.state.review} maxLength='1000' onChange={(event) => { this.setText(event) }} />
+                                                        </Grid>
+                                                        <Grid item sm={12} style={style.centerRowBadge}>
+                                                            {/* disabled={this.state.reviewHeight == 0 ? true : false}  */}
+                                                            <Button variant="outlined" color="primary" id='btnSubmit' type="submit" style={{ width: '40vmin' }} onClick={(event) => { this.submitReview(event, 'right') }} >
+                                                                Submit Review
+                                                        </Button>
+                                                            <Popper
+                                                                text={this.state.badgeText}
+                                                                anchorEl={this.state.anchorEl} />
+                                                        </Grid>
+                                                    </Grid>
                                                 </Grid>
-                                                <Grid item sm={12} style={style.centerRow}>
-                                                    {this.state.reviewHeight == 0 && <Typography>Thank you</Typography>}
-                                                </Grid>
-                                                <Grid item sm={12} style={style.centerRow}>
-                                                    <Rating onClick={(rating) => this.setRating(rating)} active={true} />
-                                                </Grid>
-                                                <Grid item sm={12} style={style.centerRow}>
-                                                    <textarea style={{ height: '70px' }} value={this.state.review} maxLength='1000' onChange={(event) => { this.setText(event) }} />
-                                                </Grid>
-                                                <Grid item sm={12} style={style.centerRowBadge}>
-                                                    <Button disabled={this.state.reviewHeight == 0 ? true : false} variant="outlined" color="primary" id='btnSubmit' type="submit" style={{ width: '40vmin' }} onClick={(event) => { this.submitReview(event, 'right') }} >
-                                                        Submit Review
-                                                   </Button>
-                                                    <Popper
-                                                        text='Please Log in to continue'
-                                                        anchorEl={this.state.anchorEl} />
-                                                </Grid>
-                                            </Grid>
-                                        </Grid>
+                                            </React.Fragment>
+                                        }
+
                                     </Grid>
                                 </Card>
                             )
@@ -169,17 +181,30 @@ class bookDetail extends Component {
     submitReview(event, _place) {
         let isSignedIn = GLOBAL.userId == '' ? false : true
         if (!isSignedIn) {
-            this.setState({ anchorEl: this.state.anchorEl ? null : event.currentTarget, })
-            setTimeout(() => {
-                this.setState({ anchorEl: null })
-            }, 1500)
+            this.showBadge(event.currentTarget, 'Please Log in to continue')
             return false
         }
         let date = this.formatDate(new Date(Date.now()))
         this.props.addRatingMutation({
             variables: { rating: parseInt(this.state.starsSelected), review: this.state.review, bookId: bookId, date: date, userId: GLOBAL.userId },
         })
-        this.setState({ starsSelected: 0, review: '', reviewHeight: 0 })
+
+        this.setState({
+            starsSelected: 0, review: '', reviewHeight: 0,
+        })
+        this.showBadge(event.currentTarget, 'Review added successfully')
+    }
+    showBadge(target, text) {
+        this.setState({ anchorEl: this.state.anchorEl ? null : target, badgeText: text })
+        setTimeout(() => {
+            this.setState({ anchorEl: null })
+        }, 1500)
+    }
+    isReviewAlready(ratings) {
+        const rvs = ratings.filter(e => String(e.userId).includes(GLOBAL.userId))
+        console.log(rvs.length)
+        if (rvs.length == 0) return false
+        else return true
     }
 }
 const style = {
@@ -267,6 +292,13 @@ const style = {
         justifyContent: 'center',
         alignItems: 'center',
         position: 'relative'
+    },
+    loader: {
+        display: 'flex',
+        flexDirection: 'column',
+        justifyContent: 'center',
+        alignItems: 'center',
+        flexGrow: 1,
     }
 }
 
