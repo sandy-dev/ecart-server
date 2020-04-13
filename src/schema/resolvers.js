@@ -1,5 +1,6 @@
 import { PubSub } from 'graphql-subscriptions'
 import { CartModel } from '../models/cart'
+import { GalleryModel } from '../models/gallery'
 import { BookModel } from '../models/book'
 import { AuthorModel } from '../models/author'
 import { RatingModel } from '../models/rating'
@@ -144,6 +145,40 @@ export const resolvers = {
             // ]) .then((result) => {
             //     console.log(result)
             // })
+        },
+
+        galleryItems: async (root, args) => {
+            let lstCount = await GalleryModel.aggregate(
+                [
+                    { $match: { title: args.title } },
+                    {
+                        $count: "totalCount"
+                    }
+                ])
+            let _count = lstCount.length > 0 ? lstCount[0]['totalCount'] : 0
+            let _items = await GalleryModel
+                .find()//{ title: args.title }
+                .populate('items')
+                .limit(args.limit == 0 ? _count : args.limit)
+                .skip(args.offset)
+
+            return {
+                count: _count,
+                GalleryItems: _items
+            }
+        },
+        galleryItemsCursor: async (root, { title, limit, cursor }) => {
+            let _items = await GalleryModel
+                .find({ title: new RegExp(title), timeStamp: { $gt: cursor || '' } })
+                .sort('timeStamp')
+                .limit(limit)
+            let newCursor = _items.length ? _items[_items.length - 1].timeStamp : null
+            let nextItems = await GalleryModel.find({ timeStamp: { $gt: newCursor || '' } }).limit(5)
+            return {
+                GalleryItems: _items,
+                cursor: _items.length ? _items[_items.length - 1].timeStamp : null,
+                hasMore: nextItems.length > 0 ? true : false
+            }
         }
     },
 
@@ -304,6 +339,15 @@ export const resolvers = {
         async removeAuthor(root, args) {
             const author = await AuthorModel.findByIdAndDelete(args.id)
             return author
+        },
+
+        async addGalleryItem(root, args) {
+            const galleryItem = await GalleryModel.create(args)
+            return galleryItem
+        },
+        async removeGalleryItem(root, args) {
+            const galleryItem = await GalleryModel.findByIdAndDelete(args.id)
+            return galleryItem
         },
     },
 

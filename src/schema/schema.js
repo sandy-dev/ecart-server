@@ -76,6 +76,28 @@ export default `
     Carts: [Cart]
   }
 
+  type Gallery {
+    _id: ID!
+    userId: String!
+    userName: String!
+    timeStamp: String!
+    date: String!
+    url: String!
+    title: String!
+    subHeader: String!
+    description: String!
+  }
+
+  type GalleryResult {
+    count: Int
+    GalleryItems: [Gallery]
+  }
+  type GalleryResultCursor {
+    cursor: String
+    hasMore: Boolean!
+    GalleryItems: [Gallery]
+  }
+
   type Query {
     
     book( id: String!): Book
@@ -93,6 +115,9 @@ export default `
 
     cart(userId: String!): Cart
     carts(userId: String!, limit: Int!, offset :Int!, count :Int!): CartResult
+
+    galleryItems(title: String!, limit: Int!, offset :Int!): GalleryResult
+    galleryItemsCursor(title: String!, limit: Int!, cursor :String): GalleryResultCursor
   }
 
 
@@ -133,6 +158,9 @@ export default `
     
     addAuthor(name: String!,age: Int!): Author
     removeAuthor(id: String!): Author
+
+    addGalleryItem(userId: String!,userName:String!,timeStamp:String!,date: String!, url: String!,title: String!,subHeader: String!,description: String!): Gallery
+    removeGalleryItem(id: String!): Gallery
 
   }
 
