@@ -169,11 +169,20 @@ export const resolvers = {
         },
         galleryItemsCursor: async (root, { title, limit, cursor }) => {
             let _items = await GalleryModel
-                .find({ title: new RegExp(title), timeStamp: { $gt: cursor || '' } })
+                .find({
+                    title: { $regex: new RegExp(title, "i") },
+                    timeStamp: { $gt: cursor || '' }
+                })
                 .sort('timeStamp')
                 .limit(limit)
             let newCursor = _items.length ? _items[_items.length - 1].timeStamp : null
-            let nextItems = await GalleryModel.find({ timeStamp: { $gt: newCursor || '' } }).limit(5)
+            let nextItems = await GalleryModel.find({
+                title: {
+                    $regex: new RegExp(title, "i")
+                },
+                timeStamp: { $gt: newCursor || '' }
+            })
+                .limit(5)
             return {
                 GalleryItems: _items,
                 cursor: _items.length ? _items[_items.length - 1].timeStamp : null,

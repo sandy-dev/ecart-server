@@ -37,7 +37,8 @@ app.post('/upload', (req, res) => {
 
     const file = req.files.file
     //__dirname
-    file.mv(`${__dirname}/client/public/uploads/${file.name}`, err => {
+    //process.cwd()
+    file.mv(`${process.cwd()}/client/public/uploads/${file.name}`, err => {
         if (err) {
             console.error(err)
             return res.status(500).send(err)
@@ -69,7 +70,7 @@ app.post('/upload', (req, res) => {
 // })
 
 mongoose.Promise = global.Promise
-mongoose.connect(mongoUrlLocal)
+mongoose.connect(mongoUrlLive)
 //mongoose.connect(config.get('mongoUriLive'))
 
 mongoose.connection.once('open', () => {
@@ -79,7 +80,7 @@ mongoose.connection.once('open', () => {
 const PORT = process.env.PORT || 5000
 app.use('/graphql', bodyParser.json(), graphqlHTTP((request, response) => ({
     schema: schema,
-    graphiql: false,
+    graphiql: true,
     context: { request: request, response: response }
 })
 ))
@@ -87,7 +88,7 @@ app.use('/graphql', bodyParser.json(), graphqlHTTP((request, response) => ({
 app.use(express.static('client/public'))
 app.get('*', (req, res) => {
     //process.cwd()
-    res.sendFile(path.resolve(__dirname, 'client', 'public', 'index.html'))
+    res.sendFile(path.resolve(process.cwd(), 'client', 'public', 'index.html'))
 })
 
 const server = createServer(app)
