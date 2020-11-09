@@ -80,7 +80,7 @@ mongoose.connection.once('open', () => {
 const PORT = process.env.PORT || 5000
 app.use('/graphql', bodyParser.json(), graphqlHTTP((request, response) => ({
     schema: schema,
-    graphiql: true,
+    graphiql: false,
     context: { request: request, response: response }
 })
 ))
