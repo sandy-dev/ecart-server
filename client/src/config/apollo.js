@@ -16,7 +16,7 @@ const httpLink = new HttpLink({
 })
 
 const wsLink = new WebSocketLink({
-    uri: `ws://ecart-graphql.herokuapp.com/subscriptions`,
+    uri: `wss://ecart-graphql.herokuapp.com/subscriptions`,
     //uri: `wss://cart.wiserows.com/subscriptions`,
     options: {
         reconnect: true
