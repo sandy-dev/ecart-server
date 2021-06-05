@@ -1,9 +1,11 @@
-# e-book cart demo
+### e-book cart demo
 
-ReactJs, GraphQL, MongoDB
+#### Stack
+- ReactJs
+- GraphQL
+- MongoDB
 
-https://ecart-graphql.herokuapp.com
-
+#### Installation
 - git clone ecart-server
 - cd ecart-server
 - yarn install
