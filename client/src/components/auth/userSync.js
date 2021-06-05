@@ -6,7 +6,7 @@ import { GET_USER, ADD_USER } from '_src/components/queries/users'
 const UserSync = (props) => {
 
   if (props.user && props.user.uid) {
-    GLOBAL.userId = props.user.uid  //5dec970b1806381dbeb73f4d
+    GLOBAL.userId = props.user.uid
     GLOBAL.name = props.user.name
     GLOBAL.email = props.user.email
     getUser(props)
