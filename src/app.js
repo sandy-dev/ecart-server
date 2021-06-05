@@ -17,8 +17,8 @@ import typeDefs from './schema/schema'
 import { resolvers } from './schema/resolvers'
 //import auth from './middleware/auth'
 
-const mongoUrlLocal = 'mongodb://localhost:27017/test3'
-const mongoUrlLive = 'mongodb+srv://test1:test1@tmcluster-sptsd.mongodb.net/test?retryWrites=true&w=majority'
+const mongoUrlLocal = '***'
+const mongoUrlLive = '***'
 
 const schema = makeExecutableSchema({
     typeDefs,
