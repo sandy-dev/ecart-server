@@ -8,8 +8,8 @@ const path = require('path')
 
 const app = express()
 
-const mongoUrlLocal = 'mongodb://localhost:27017/test3'
-const mongoUrlLive = 'mongodb://127.0.0.1:27017/test3'
+const mongoUrlLocal = '***'
+const mongoUrlLive = '***'
 
 // Allow cross-origin
 app.use(cors())
